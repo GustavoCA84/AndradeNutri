@@ -59,8 +59,9 @@ export default function Register({ onRegisterSuccess, navigateToLogin }) {
         onRegisterSuccess(user);
       }, 1500);
     } catch (err) {
-      console.error(err);
-      setError('Erro ao tentar criar conta. Tente novamente mais tarde.');
+      console.error('Erro de registro:', err);
+      const errorMessage = err?.message || err?.statusText || 'Erro ao tentar criar conta. Tente novamente mais tarde.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
