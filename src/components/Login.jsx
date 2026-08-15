@@ -71,8 +71,11 @@ export default function Login({ onLoginSuccess, navigateToRegister }) {
               Nutrição inteligente,<br />cuidado personalizado
             </h1>
             <p className="left-subtitle">
-              Tudo que você precisa para gerenciar seus pacientes em um só lugar.
+              Melhor que NutriMI, Resultado é Aqui !
             </p>
+            <h2 className="nutri-andrade-highlight">
+              NutriAndrade
+            </h2>
           </div>
 
           {/* Lista de Benefícios com ícones translúcidos */}

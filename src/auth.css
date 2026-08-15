@@ -107,7 +107,19 @@
   font-size: 16px;
   line-height: 1.5;
   color: #eff6ff;
-  opacity: 0.9;
+  opacity: 0.95;
+}
+
+.nutri-andrade-highlight {
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1px;
+  margin-top: 4px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Benefícios */
