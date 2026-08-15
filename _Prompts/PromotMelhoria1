@@ -1,0 +1,1325 @@
+# Evolução completa do módulo de pacientes — Sistema de Nutrição
+
+Quero evoluir o módulo de pacientes existente na minha aplicação web de gestão para nutricionistas.
+
+## Contexto atual do projeto
+
+O projeto já está em desenvolvimento e possui:
+
+* GitHub como repositório e controle de versão.
+* Neon como banco de dados PostgreSQL.
+* Vercel para hospedagem, deploy e disponibilização do sistema online.
+* Sistema visual já existente seguindo identidade em verde e branco.
+* Menu lateral fixo já existente.
+* Autenticação de nutricionistas já implementada ou em desenvolvimento.
+* Módulo de pacientes já possui uma tela de listagem e um formulário básico de cadastro.
+
+### IMPORTANTE
+
+Antes de implementar qualquer coisa:
+
+1. Analise cuidadosamente toda a estrutura atual do projeto.
+2. Identifique o framework utilizado.
+3. Identifique como autenticação e sessão da nutricionista estão implementadas.
+4. Identifique como o acesso ao Neon/PostgreSQL está implementado.
+5. Analise o schema atual do banco.
+6. Analise as tabelas existentes relacionadas a usuários, nutricionistas e pacientes.
+7. Analise os componentes visuais existentes.
+8. Analise o padrão de rotas utilizado.
+9. Analise o padrão de formulários e validações utilizado.
+10. Analise como o projeto está configurado para deploy na Vercel.
+11. Não recrie funcionalidades que já existem.
+12. Não substitua tecnologias existentes sem necessidade.
+13. Preserve o padrão visual e arquitetural atual.
+14. Faça alterações incrementais e compatíveis com o código existente.
+
+Sempre que uma funcionalidade já existir, aproveite e evolua a implementação atual em vez de criar uma segunda versão.
+
+---
+
+# OBJETIVO
+
+Transformar o módulo de pacientes em um módulo completo de acompanhamento nutricional.
+
+O sistema deve permitir:
+
+* cadastrar pacientes;
+* editar pacientes;
+* visualizar perfil completo;
+* acompanhar evolução;
+* registrar consultas;
+* registrar medidas corporais;
+* visualizar histórico;
+* armazenar documentos;
+* organizar pacientes;
+* controlar status;
+* pesquisar e filtrar;
+* registrar informações clínicas e de hábitos;
+* manter histórico de alterações importantes;
+* preparar a estrutura para futuras funcionalidades como plano alimentar.
+
+---
+
+# 1. LISTAGEM DE PACIENTES
+
+Evolua a tela existente de pacientes.
+
+A tela deve exibir todos os pacientes vinculados à nutricionista autenticada.
+
+Nunca mostrar pacientes pertencentes a outra nutricionista.
+
+Cada paciente deve apresentar:
+
+* Nome completo
+* Objetivo principal
+* Data da última consulta
+* Data da próxima consulta, quando existir
+* Status
+* Data de cadastro
+
+Adicionar campo de busca por:
+
+* Nome
+* Telefone
+* Email
+
+Adicionar filtros:
+
+* Status
+* Objetivo
+* Data da última consulta
+* Condições de saúde
+* Pacientes sem próxima consulta
+
+Adicionar ordenação:
+
+* Nome
+* Cadastro mais recente
+* Cadastro mais antigo
+* Última consulta
+* Próxima consulta
+
+Se não houver pacientes:
+
+"Nenhum paciente cadastrado ainda"
+
+Se houver pacientes mas nenhum resultado corresponder à busca:
+
+"Nenhum paciente encontrado"
+
+---
+
+# 2. STATUS DO PACIENTE
+
+Adicionar status ao paciente:
+
+* Ativo
+* Em acompanhamento
+* Inativo
+* Arquivado
+
+O status padrão ao cadastrar deve ser:
+
+"Ativo"
+
+Pacientes arquivados não devem aparecer na listagem principal por padrão.
+
+Adicionar filtro para visualizar arquivados.
+
+Arquivar não deve excluir o paciente do banco.
+
+Adicionar ação:
+
+* Arquivar paciente
+* Restaurar paciente
+
+Solicitar confirmação antes de arquivar.
+
+---
+
+# 3. IDENTIFICAÇÃO DO PACIENTE
+
+Cada paciente deve possuir:
+
+* ID interno único
+* nutricionista_id
+* Data de cadastro
+* Data de atualização
+* Status
+
+Se fizer sentido para a arquitetura atual, criar também um código amigável do paciente, por exemplo:
+
+PAC-000001
+
+Esse código deve ser único.
+
+---
+
+# 4. CADASTRO DE PACIENTE
+
+Manter o formulário dividido em três abas:
+
+## Aba 1 — Pessoal
+
+Campos:
+
+* Nome completo — obrigatório
+* Data de nascimento
+* Idade calculada automaticamente
+* Sexo:
+
+  * Feminino
+  * Masculino
+  * Outro
+* WhatsApp
+* Email
+
+Adicionar também:
+
+* Profissão
+* Cidade
+* Estado
+
+O único campo obrigatório continua sendo:
+
+Nome completo.
+
+### Validações
+
+Nome:
+
+* mínimo de 2 palavras;
+* remover espaços duplicados;
+* não permitir nome vazio.
+
+Data de nascimento:
+
+* não pode ser futura.
+
+Email:
+
+* validar formato.
+
+WhatsApp:
+
+* aplicar máscara automaticamente;
+* armazenar no banco em formato consistente.
+
+---
+
+# 5. ABA CLÍNICA
+
+Campos existentes:
+
+## Antropometria
+
+* Peso atual em kg
+* Altura em cm
+* IMC calculado automaticamente
+* Classificação do IMC
+
+O IMC deve ser somente leitura.
+
+Fórmula:
+
+IMC = peso / (altura em metros × altura em metros)
+
+Exemplo:
+
+Peso = 80 kg
+Altura = 1,70 m
+
+IMC = 27,68
+
+Exibir aproximadamente:
+
+27,7
+
+A classificação deve ser calculada automaticamente.
+
+Não permitir que a nutricionista edite manualmente o IMC.
+
+---
+
+# 6. OBJETIVOS
+
+Manter múltipla escolha:
+
+* Emagrecer
+* Ganhar massa
+* Controlar diabetes
+* Saúde geral
+* Performance esportiva
+* Reeducação alimentar
+
+Adicionar:
+
+* Objetivo adicional personalizado
+
+Permitir múltiplos objetivos.
+
+---
+
+# 7. ATIVIDADE FÍSICA
+
+Manter:
+
+* Sedentário
+* Levemente ativo
+* Moderadamente ativo
+* Muito ativo
+* Extremamente ativo
+
+---
+
+# 8. PATOLOGIAS E CONDIÇÕES
+
+Manter:
+
+* Diabetes
+* Hipertensão
+* Hipotireoidismo
+* Hipertireoidismo
+* Síndrome do ovário policístico
+* Doença celíaca
+* Colesterol alto
+* Nenhum
+
+Adicionar:
+
+* Condições personalizadas
+
+Regra:
+
+Se "Nenhum" estiver selecionado, não permitir outras condições simultaneamente.
+
+---
+
+# 9. RESTRIÇÕES ALIMENTARES
+
+Opções:
+
+* Lactose
+* Glúten
+* Açúcar
+* Carne vermelha
+* Frutos do mar
+* Nenhum
+
+Adicionar:
+
+* Restrições personalizadas
+
+Aplicar a mesma regra:
+
+"Nenhum" não pode coexistir com outras opções.
+
+---
+
+# 10. ALERGIAS
+
+Opções:
+
+* Amendoim
+* Leite
+* Ovo
+* Soja
+* Trigo
+* Frutos do mar
+* Nenhum
+
+Adicionar:
+
+* Alergias personalizadas
+
+Aplicar a regra de exclusividade de "Nenhum".
+
+---
+
+# 11. MEDICAMENTOS E SUPLEMENTOS
+
+Adicionar:
+
+* Medicamentos contínuos
+* Suplementos em uso
+
+Campos de texto livre.
+
+---
+
+# 12. ABA HÁBITOS
+
+Campos:
+
+* Quantidade de refeições por dia
+* Horário que acorda
+* Horário que dorme
+* Quantidade de água por dia
+* Pratica atividade física
+* Qual atividade
+* Frequência semanal
+* Observações gerais
+
+## Conversão de horário
+
+O sistema deve aceitar entrada numérica.
+
+Exemplos:
+
+6 → 06:00
+
+23 → 23:00
+
+630 → 06:30
+
+2230 → 22:30
+
+Validar horários inválidos.
+
+---
+
+# 13. NOVAS INFORMAÇÕES DE ANAMNESE
+
+Adicionar uma seção de anamnese.
+
+Campos:
+
+* Motivo da consulta
+* Histórico de dietas anteriores
+* Tentativas anteriores de emagrecimento
+* Histórico familiar relevante
+* Cirurgias anteriores
+* Nível de estresse
+* Qualidade do sono
+* Preferências alimentares
+* Alimentos que não gosta
+* Frequência de refeições fora de casa
+* Consumo de ultraprocessados
+* Consumo de refrigerantes
+* Consumo de café
+* Consumo de bebidas alcoólicas
+
+Esses campos podem ficar em uma seção adicional dentro do cadastro ou no perfil do paciente, conforme a arquitetura atual.
+
+---
+
+# 14. RESUMO ANTES DE SALVAR
+
+Antes de finalizar o cadastro, apresentar uma etapa de confirmação.
+
+Mostrar resumo:
+
+* Nome
+* Idade
+* Sexo
+* WhatsApp
+* Email
+* Peso
+* Altura
+* IMC
+* Objetivos
+* Atividade física
+* Condições
+* Restrições
+* Alergias
+* Refeições por dia
+* Água
+* Horário de sono
+* Horário que acorda
+
+Botões:
+
+"Voltar"
+
+"Salvar paciente"
+
+Não salvar novamente ao voltar para editar.
+
+---
+
+# 15. SALVAMENTO
+
+Ao salvar:
+
+1. Validar os dados.
+2. Criar paciente.
+3. Vincular obrigatoriamente ao usuário autenticado através de:
+
+nutricionista_id
+
+4. Registrar data de criação.
+5. Registrar data de atualização.
+6. Criar código do paciente, caso implementado.
+7. Criar registro inicial de evolução clínica, quando apropriado.
+8. Exibir mensagem:
+
+"Paciente cadastrado com sucesso!"
+
+9. Redirecionar para o perfil do paciente recém-criado.
+
+Nunca confiar em um nutricionista_id enviado diretamente pelo frontend.
+
+O nutricionista_id deve ser obtido da sessão/autenticação do usuário.
+
+---
+
+# 16. PERFIL DO PACIENTE
+
+Criar ou evoluir a página de perfil do paciente.
+
+Estrutura:
+
+## Cabeçalho
+
+Mostrar:
+
+* Nome
+* Código do paciente
+* Status
+* Idade
+* Objetivo principal
+* Última consulta
+* Próxima consulta
+
+Ações:
+
+* Editar paciente
+* Nova consulta
+* Registrar evolução
+* Nova medida
+* Arquivar paciente
+
+---
+
+# 17. MENU INTERNO DO PACIENTE
+
+Criar navegação:
+
+* Resumo
+* Consultas
+* Evolução
+* Medidas
+* Anamnese
+* Documentos
+
+Manter o menu lateral principal do sistema.
+
+---
+
+# 18. RESUMO DO PACIENTE
+
+Criar dashboard do paciente.
+
+Cards:
+
+* Peso atual
+* IMC
+* Última consulta
+* Próxima consulta
+* Objetivo principal
+* Status
+
+Mostrar também:
+
+* Condições de saúde
+* Restrições
+* Alergias
+* Medicamentos
+* Suplementos
+
+---
+
+# 19. HISTÓRICO DE CONSULTAS
+
+Criar entidade/tabela de consultas.
+
+Cada consulta deve possuir:
+
+* ID
+* paciente_id
+* nutricionista_id
+* Data
+* Horário
+* Tipo
+* Status
+* Observações
+* Data de criação
+* Data de atualização
+
+Tipos:
+
+* Presencial
+* Online
+
+Status:
+
+* Agendada
+* Confirmada
+* Realizada
+* Cancelada
+* Não compareceu
+
+---
+
+# 20. AGENDAMENTO
+
+Permitir criar uma consulta pelo perfil do paciente.
+
+Campos:
+
+* Data
+* Horário
+* Tipo
+* Status
+* Observações
+
+No perfil:
+
+"Próxima consulta"
+
+deve mostrar automaticamente a próxima consulta válida.
+
+A listagem deve mostrar:
+
+"Última consulta"
+
+com base na consulta mais recente realizada.
+
+---
+
+# 21. EVOLUÇÃO CLÍNICA
+
+Criar entidade/tabela de evolução.
+
+Cada registro deve estar vinculado a:
+
+* paciente_id
+* nutricionista_id
+* consulta_id, quando aplicável
+
+Campos:
+
+* Data
+* Peso
+* Altura
+* IMC
+* Percentual de gordura
+* Massa muscular
+* Observações
+
+O IMC deve ser calculado automaticamente.
+
+Permitir registrar nova evolução.
+
+---
+
+# 22. MEDIDAS CORPORAIS
+
+Criar uma área específica para medidas.
+
+Campos:
+
+* Data
+* Cintura
+* Abdômen
+* Quadril
+* Braço
+* Coxa
+* Percentual de gordura
+* Massa muscular
+* Observações
+
+Permitir registrar múltiplas medições ao longo do tempo.
+
+---
+
+# 23. GRÁFICOS DE EVOLUÇÃO
+
+No perfil do paciente, criar gráficos.
+
+Gráfico de peso:
+
+* eixo X = data
+* eixo Y = peso
+
+Gráfico de IMC.
+
+Gráfico de percentual de gordura, caso existam dados.
+
+Gráfico de medidas corporais.
+
+Os gráficos devem funcionar mesmo quando houver poucos registros.
+
+Se não houver dados suficientes:
+
+"Ainda não existem dados suficientes para exibir a evolução."
+
+---
+
+# 24. DOCUMENTOS
+
+Adicionar área de documentos do paciente.
+
+Permitir futuramente armazenar:
+
+* Exames laboratoriais
+* Documentos
+* Arquivos relacionados ao acompanhamento
+
+Cada documento deve possuir:
+
+* Nome
+* Tipo
+* Data
+* paciente_id
+* nutricionista_id
+* referência para armazenamento do arquivo
+
+IMPORTANTE:
+
+Não armazenar arquivos diretamente dentro do PostgreSQL.
+
+Criar uma arquitetura preparada para armazenamento externo de arquivos.
+
+Caso o projeto ainda não tenha storage configurado, criar a estrutura necessária sem quebrar o projeto atual e deixar claramente documentado o que depende da configuração de storage.
+
+---
+
+# 25. LGPD E SEGURANÇA
+
+O sistema trabalha com dados pessoais e informações relacionadas à saúde.
+
+Implementar uma estrutura segura.
+
+Cada paciente deve pertencer a uma única nutricionista através de:
+
+nutricionista_id
+
+Toda consulta, evolução, medida e documento também deve respeitar essa relação.
+
+Uma nutricionista nunca pode:
+
+* visualizar paciente de outra nutricionista;
+* editar paciente de outra nutricionista;
+* excluir dados de outra nutricionista;
+* acessar consultas de outra nutricionista;
+* acessar documentos de outra nutricionista.
+
+Não confiar somente na interface.
+
+A autorização deve existir também no backend/API/database query.
+
+Adicionar consentimento para armazenamento de dados pessoais, quando compatível com a arquitetura atual.
+
+Registrar:
+
+* data do consentimento;
+* versão do termo, se aplicável.
+
+---
+
+# 26. EXCLUSÃO
+
+Evitar exclusão física de pacientes como comportamento padrão.
+
+Preferir:
+
+Arquivar paciente.
+
+Se houver necessidade de exclusão definitiva no futuro, criar fluxo separado e protegido.
+
+---
+
+# 27. AUDITORIA
+
+Criar estrutura para registrar ações importantes.
+
+Exemplos:
+
+* Paciente criado
+* Paciente atualizado
+* Paciente arquivado
+* Consulta criada
+* Consulta alterada
+* Evolução registrada
+* Documento adicionado
+
+Registrar:
+
+* usuário/nutricionista
+* ação
+* entidade
+* entidade_id
+* data/hora
+
+Não é necessário exibir isso inicialmente na interface, mas a arquitetura deve estar preparada.
+
+---
+
+# 28. TAGS
+
+Adicionar suporte a tags.
+
+Exemplos:
+
+* Emagrecimento
+* Ganho de massa
+* Diabetes
+* Atleta
+* Retorno
+* Primeira consulta
+
+A nutricionista poderá adicionar/remover tags.
+
+Na listagem, permitir filtrar por tag.
+
+---
+
+# 29. AÇÕES RÁPIDAS
+
+Na lista de pacientes, adicionar menu de ações:
+
+* Ver perfil
+* Editar
+* Nova consulta
+* Registrar evolução
+* Arquivar
+
+---
+
+# 30. DASHBOARD DA NUTRICIONISTA
+
+Se já existir dashboard, adicionar indicadores relacionados aos pacientes.
+
+Cards:
+
+* Total de pacientes
+* Pacientes ativos
+* Pacientes em acompanhamento
+* Pacientes arquivados
+* Consultas hoje
+* Próximas consultas
+* Pacientes sem retorno agendado
+
+Adicionar seção:
+
+"Pacientes recentes"
+
+E:
+
+"Próximas consultas"
+
+---
+
+# 31. PACIENTES SEM ACOMPANHAMENTO
+
+Criar indicador/listagem de pacientes que estão sem consulta há determinado período.
+
+Inicialmente considerar:
+
+90 dias sem consulta realizada.
+
+Permitir futuramente tornar esse período configurável.
+
+---
+
+# 32. VALIDAÇÕES E UX
+
+Implementar:
+
+* Loading states
+* Skeletons quando apropriado
+* Estados vazios
+* Mensagens de erro
+* Mensagens de sucesso
+* Confirmações antes de ações destrutivas
+* Desabilitar botão durante salvamento
+* Evitar submissão duplicada
+* Feedback visual ao salvar
+* Tratamento de erros de backend
+* Tratamento de perda de conexão
+* Responsividade
+
+---
+
+# 33. FORMULÁRIO INTELIGENTE
+
+O formulário deve:
+
+* preservar os dados ao trocar de aba;
+* não perder dados ao navegar entre etapas;
+* mostrar validações próximas aos campos;
+* destacar campos inválidos;
+* calcular idade automaticamente;
+* calcular IMC automaticamente;
+* formatar WhatsApp;
+* formatar horários;
+* mostrar unidades automaticamente.
+
+Exemplos:
+
+Peso:
+
+[ 80 ] kg
+
+Altura:
+
+[ 170 ] cm
+
+Água:
+
+[ 2,5 ] litros
+
+---
+
+# 34. BANCO DE DADOS
+
+Analise o banco existente antes de alterar.
+
+Criar migrations apenas quando necessário.
+
+Manter relacionamentos claros.
+
+A estrutura deve permitir algo semelhante a:
+
+nutricionistas
+↓
+pacientes
+↓
+consultas
+↓
+evolucoes
+↓
+medidas
+
+E também:
+
+pacientes
+↓
+documentos
+
+pacientes
+↓
+tags
+
+Não criar tabelas duplicadas caso estruturas equivalentes já existam.
+
+Criar índices para campos utilizados frequentemente em:
+
+* nutricionista_id
+* paciente_id
+* nome
+* status
+* data de consulta
+* data de criação
+
+Garantir foreign keys e integridade referencial.
+
+---
+
+# 35. PERFORMANCE
+
+A listagem não deve carregar todos os pacientes de uma vez caso a quantidade seja grande.
+
+Implementar paginação ou carregamento incremental.
+
+A busca deve ser feita no backend/database quando apropriado.
+
+Evitar N+1 queries.
+
+O perfil do paciente deve carregar somente os dados necessários.
+
+---
+
+# 36. ROTAS
+
+Respeitar o padrão atual do projeto.
+
+A estrutura desejada conceitualmente é:
+
+/pacientes
+
+/pacientes/novo
+
+/pacientes/[id]
+
+/pacientes/[id]/editar
+
+/pacientes/[id]/consultas
+
+/pacientes/[id]/evolucao
+
+/pacientes/[id]/medidas
+
+/pacientes/[id]/anamnese
+
+/pacientes/[id]/documentos
+
+Não crie exatamente essas rotas se o projeto atual utiliza outra convenção.
+
+Adapte ao padrão existente.
+
+---
+
+# 37. RESPONSIVIDADE
+
+A aplicação deve funcionar em:
+
+* Desktop
+* Tablet
+* Celular
+
+No celular:
+
+* menu lateral deve seguir o comportamento já existente;
+* abas podem permitir scroll horizontal;
+* tabelas devem ser adaptadas;
+* cards devem ocupar largura adequada;
+* formulário deve ficar confortável para preenchimento.
+
+---
+
+# 38. DESIGN
+
+Manter rigorosamente o padrão visual atual.
+
+Identidade:
+
+* Verde
+* Branco
+* Cinza para informações secundárias
+* Vermelho apenas para erros/perigo
+
+Não criar um design completamente diferente.
+
+Reutilizar:
+
+* botões existentes;
+* inputs existentes;
+* cards existentes;
+* modais existentes;
+* componentes de navegação existentes;
+* sistema de espaçamento;
+* tipografia;
+* ícones.
+
+O módulo de pacientes deve parecer parte nativa do sistema.
+
+---
+
+# 39. CONFIRMAÇÃO DE AÇÕES
+
+Para ações como:
+
+* Arquivar paciente
+* Excluir documento
+* Cancelar consulta
+
+usar modal de confirmação.
+
+Exemplo:
+
+"Tem certeza que deseja arquivar este paciente?"
+
+Botões:
+
+"Cancelar"
+
+"Arquivar paciente"
+
+---
+
+# 40. PREPARAÇÃO PARA FUTURAS FUNCIONALIDADES
+
+Não implementar ainda, mas estruturar o banco e o código para permitir futuramente:
+
+* Plano alimentar
+* Refeições
+* Receitas
+* Prescrição nutricional
+* Metas
+* Check-ins
+* Questionários
+* Mensagens com paciente
+* Notificações
+* Integração com WhatsApp
+* Relatórios em PDF
+* Exportação de dados
+* Assinatura digital
+* Financeiro
+* Controle de pagamentos
+
+Não criar essas funcionalidades agora.
+
+Apenas evitar decisões arquiteturais que dificultem sua implementação futura.
+
+---
+
+# 41. REGRAS DE NEGÓCIO IMPORTANTES
+
+1. O paciente sempre pertence à nutricionista autenticada.
+
+2. O frontend nunca deve ser responsável por definir a nutricionista_id de forma confiável.
+
+3. O backend deve identificar a nutricionista através da sessão/autenticação.
+
+4. Toda consulta deve validar ownership.
+
+5. Toda evolução deve validar ownership.
+
+6. Toda medida deve validar ownership.
+
+7. Todo documento deve validar ownership.
+
+8. Um paciente arquivado não deve aparecer na listagem padrão.
+
+9. Arquivar não significa excluir.
+
+10. O nome completo é o único campo obrigatório do cadastro inicial.
+
+11. IMC é calculado automaticamente.
+
+12. Idade é calculada automaticamente.
+
+13. Última consulta deve ser derivada das consultas realizadas.
+
+14. Próxima consulta deve ser derivada das consultas futuras válidas.
+
+15. Não permitir "Nenhum" junto com outras opções de patologias, restrições ou alergias.
+
+---
+
+# 42. TRATAMENTO DE ERROS
+
+Criar mensagens amigáveis.
+
+Exemplos:
+
+Erro ao salvar:
+
+"Não foi possível salvar o paciente. Tente novamente."
+
+Erro de permissão:
+
+"Você não tem permissão para acessar este paciente."
+
+Paciente inexistente:
+
+"Paciente não encontrado."
+
+Erro de conexão:
+
+"Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente."
+
+---
+
+# 43. DEPLOY E AMBIENTE
+
+Como o projeto utiliza GitHub + Neon + Vercel:
+
+Antes de finalizar:
+
+1. Verificar variáveis de ambiente necessárias.
+2. Não colocar secrets no código.
+3. Não colocar credenciais do Neon no GitHub.
+4. Não alterar variáveis de produção sem necessidade.
+5. Garantir que migrations sejam aplicáveis no ambiente correto.
+6. Verificar build de produção.
+7. Verificar TypeScript/lint, caso utilizados.
+8. Verificar erros de console.
+9. Verificar rotas protegidas.
+10. Verificar funcionamento em produção.
+
+Se alguma configuração precisar ser adicionada à Vercel, documentar claramente:
+
+* nome da variável;
+* finalidade;
+* ambiente necessário;
+* onde ela deve ser configurada.
+
+Nunca revelar ou imprimir valores secretos.
+
+---
+
+# 44. GIT E VERSIONAMENTO
+
+Antes de começar:
+
+* analisar o estado atual do Git;
+* não apagar alterações existentes;
+* não sobrescrever trabalho já realizado;
+* trabalhar em mudanças organizadas.
+
+Após implementar:
+
+* revisar arquivos modificados;
+* remover código morto;
+* remover imports não utilizados;
+* verificar migrations;
+* verificar tipos;
+* verificar build.
+
+Se o ambiente permitir criar commits, usar mensagens claras, por exemplo:
+
+"feat: evolve patient management module"
+
+Não fazer push forçado.
+
+---
+
+# 45. TESTES
+
+Criar ou atualizar testes para os pontos mais importantes.
+
+Testar:
+
+* criação de paciente;
+* nome obrigatório;
+* cálculo de idade;
+* cálculo de IMC;
+* criação vinculada à nutricionista;
+* isolamento entre nutricionistas;
+* edição de paciente;
+* arquivamento;
+* restauração;
+* criação de consulta;
+* criação de evolução;
+* criação de medidas;
+* filtros;
+* busca;
+* validação de "Nenhum";
+* proteção de rotas.
+
+Testar principalmente regras de autorização e ownership.
+
+---
+
+# 46. CRITÉRIO DE ACEITAÇÃO
+
+Considerar a tarefa concluída somente quando:
+
+* cadastro funcionar;
+* edição funcionar;
+* listagem funcionar;
+* busca funcionar;
+* filtros funcionarem;
+* perfil funcionar;
+* consultas funcionarem;
+* evolução funcionar;
+* medidas funcionarem;
+* cálculo de IMC funcionar;
+* idade funcionar;
+* status funcionar;
+* arquivamento funcionar;
+* tags funcionarem;
+* isolamento por nutricionista funcionar;
+* estados vazios funcionarem;
+* mensagens de sucesso/erro funcionarem;
+* layout estiver responsivo;
+* banco estiver corretamente relacionado;
+* migrations estiverem organizadas;
+* aplicação estiver pronta para build;
+* aplicação estiver compatível com Vercel;
+* não existirem erros críticos no console.
+
+---
+
+# 47. FORMA DE EXECUÇÃO
+
+Não tente implementar tudo cegamente de uma única vez.
+
+Primeiro faça uma análise do projeto atual e apresente um diagnóstico contendo:
+
+1. Stack utilizada.
+2. Estrutura de pastas.
+3. Sistema de autenticação.
+4. Estrutura atual do banco.
+5. Tabelas existentes.
+6. Tabelas que precisam ser alteradas.
+7. Tabelas novas necessárias.
+8. Rotas existentes.
+9. Componentes reutilizáveis.
+10. Possíveis conflitos com a arquitetura atual.
+
+Depois disso, implemente em etapas:
+
+### Etapa 1
+
+Banco de dados e migrations.
+
+### Etapa 2
+
+Cadastro e edição.
+
+### Etapa 3
+
+Listagem, busca, filtros e status.
+
+### Etapa 4
+
+Perfil do paciente.
+
+### Etapa 5
+
+Consultas.
+
+### Etapa 6
+
+Evolução e medidas.
+
+### Etapa 7
+
+Anamnese e informações adicionais.
+
+### Etapa 8
+
+Documentos e estrutura de storage.
+
+### Etapa 9
+
+Dashboard e indicadores.
+
+### Etapa 10
+
+Segurança, validações, testes e otimização.
+
+Após cada etapa:
+
+* verificar se o projeto compila;
+* verificar se não existem regressões;
+* verificar banco;
+* verificar permissões;
+* verificar frontend;
+* verificar backend.
+
+---
+
+# INSTRUÇÃO FINAL
+
+Não faça apenas uma alteração visual.
+
+Quero uma implementação funcional de ponta a ponta:
+
+Frontend
+→ Backend/API
+→ Autenticação
+→ PostgreSQL/Neon
+→ Validações
+→ Relacionamentos
+→ Segurança
+→ Persistência
+→ Vercel
+
+Analise primeiro o código existente e adapte a solução à arquitetura atual.
+
+Preserve todas as funcionalidades existentes.
+
+Não remova dados existentes.
+
+Não recrie tabelas ou componentes que já existam.
+
+Não invente informações sobre a arquitetura: descubra através do código.
+
+Se houver uma decisão arquitetural importante que não possa ser determinada pelo projeto atual, pare naquela etapa, explique o problema e proponha a solução antes de fazer uma alteração destrutiva.
+
+O resultado final deve ser um módulo de pacientes profissional, seguro, escalável e preparado para evoluir para uma plataforma completa de gestão nutricional.
