@@ -1,0 +1,986 @@
+REDESIGN PROFISSIONAL DA APLICAÇÃO
+
+Quero fazer uma reformulação visual completa da aplicação atual.
+
+A aplicação já possui funcionalidades implementadas e conectadas ao GitHub, Neon e Vercel.
+
+IMPORTANTE: não quero refazer a aplicação do zero.
+
+Quero manter todas as funcionalidades, regras de negócio, banco de dados, autenticação, rotas e integrações existentes.
+
+O objetivo desta tarefa é transformar a interface atual, que está muito simples, em uma aplicação com aparência de software SaaS profissional, moderno, sofisticado e confiável, voltado para nutricionistas e profissionais da área da saúde.
+
+1. NOVA IDENTIDADE VISUAL
+
+Abandonar a identidade atual em verde.
+
+A nova identidade deve utilizar:
+
+Cor principal
+
+Azul Royal
+
+Usar azul royal como principal cor de identidade da aplicação.
+
+Sugestão:
+
+Primary: #2563EB
+Primary Dark: #1D4ED8
+Primary Light: #EFF6FF
+
+Não é obrigatório utilizar exatamente essas cores se o projeto já possuir um sistema de design, mas a identidade deve permanecer dentro dessa proposta.
+
+Cores neutras
+
+Utilizar principalmente:
+
+Branco
+Cinza muito claro
+Cinza claro
+Cinza médio
+Cinza escuro
+Grafite
+
+Sugestão:
+
+Background: #F8FAFC
+Surface: #FFFFFF
+Border: #E2E8F0
+Text Primary: #0F172A
+Text Secondary: #64748B
+Text Muted: #94A3B8
+Estados
+
+Sucesso:
+
+Verde discreto
+
+Alerta:
+
+Amarelo/âmbar
+
+Erro:
+
+Vermelho
+
+Informação:
+
+Azul
+
+As cores de estado devem ser utilizadas somente quando fizerem sentido e não competir com o azul royal da identidade principal.
+
+2. OBJETIVO VISUAL
+
+Quero que a aplicação pareça um produto SaaS profissional.
+
+Referência conceitual:
+
+moderno;
+clean;
+elegante;
+minimalista;
+profissional;
+tecnológico;
+confiável;
+organizado;
+sofisticado;
+excelente hierarquia visual.
+
+Evitar aparência de:
+
+sistema antigo;
+CRUD simples;
+formulário genérico;
+template gratuito;
+excesso de caixas;
+excesso de bordas;
+excesso de sombras;
+cores muito fortes.
+3. DESIGN SYSTEM
+
+Antes de modificar cada tela, criar ou organizar um design system centralizado.
+
+Definir tokens para:
+
+Cores
+primary
+primary-hover
+primary-active
+primary-light
+background
+surface
+border
+text-primary
+text-secondary
+text-muted
+success
+warning
+danger
+info
+Espaçamento
+
+Criar padrão consistente para:
+
+4px
+8px
+12px
+16px
+20px
+24px
+32px
+40px
+48px
+Border radius
+
+Utilizar bordas modernas e discretas.
+
+Sugestão:
+
+inputs: 8px
+cards: 12px
+modais: 16px
+botões: 8px
+
+Evitar excesso de arredondamento.
+
+4. TIPOGRAFIA
+
+Melhorar significativamente a hierarquia tipográfica.
+
+Usar uma fonte moderna e profissional, caso o projeto atual não possua uma boa fonte.
+
+Sugestões:
+
+Inter
+Geist
+Manrope
+
+Preferencialmente utilizar a fonte já existente se ela estiver adequada.
+
+Criar hierarquia:
+
+Heading principal
+
+24–32px
+
+Heading secundário
+
+18–22px
+
+Título de seção
+
+16–18px
+
+Texto
+
+14–16px
+
+Texto auxiliar
+
+12–14px
+
+Os textos devem ter pesos diferentes para criar hierarquia.
+
+Evitar colocar tudo em negrito.
+
+5. SIDEBAR
+
+O menu lateral deve ser completamente redesenhado.
+
+Manter a sidebar fixa no desktop.
+
+Visual:
+
+fundo branco ou azul royal escuro, dependendo do que ficar mais elegante;
+borda lateral muito discreta;
+logo/nome do sistema no topo;
+menu organizado por categorias;
+ícones consistentes;
+item ativo claramente destacado.
+
+Estrutura conceitual:
+
+Dashboard
+
+Pacientes
+
+Agenda
+
+Gestão
+
+Consultas
+Evolução
+Documentos
+
+Sistema
+
+Configurações
+
+No item ativo:
+
+background azul claro;
+texto azul royal;
+ícone azul royal;
+indicador visual lateral ou outro elemento discreto.
+
+Evitar sidebar visualmente pesada.
+
+6. HEADER
+
+Criar um header profissional.
+
+No topo:
+
+título da página;
+breadcrumb quando necessário;
+busca global, se fizer sentido;
+notificações;
+avatar da nutricionista;
+menu do usuário.
+
+Exemplo:
+
+Pacientes
+
+Início / Pacientes
+
+No canto direito:
+
+Notificações
+
+Avatar
+
+"Nome da Nutricionista"
+
+7. DASHBOARD
+
+Redesenhar o dashboard para parecer um verdadeiro painel profissional.
+
+Criar cards de indicadores.
+
+Exemplo:
+
+Pacientes
+
+Total
+
+128
+
+Consultas hoje
+
+8
+
+Próximos atendimentos
+
+14
+
+Pacientes ativos
+
+104
+
+Os cards devem possuir:
+
+título;
+número principal;
+informação secundária;
+ícone;
+indicador de tendência quando fizer sentido.
+
+Não exagerar nas cores.
+
+Utilizar predominantemente branco + cinza + azul royal.
+
+8. CARDS
+
+Todos os cards da aplicação devem seguir o mesmo padrão.
+
+Características:
+
+fundo branco;
+border #E2E8F0;
+border-radius 12px;
+sombra muito sutil ou nenhuma;
+padding confortável;
+título discreto;
+conteúdo bem hierarquizado.
+
+Evitar:
+
+sombras pesadas;
+gradientes excessivos;
+bordas muito grossas.
+9. TELA DE PACIENTES
+
+Redesenhar completamente a tela de pacientes.
+
+Cabeçalho:
+
+"Pacientes"
+
+Descrição:
+
+"Gerencie seus pacientes e acompanhe sua evolução."
+
+Botão:
+
++ Novo paciente
+
+O botão deve utilizar azul royal.
+
+10. BARRA DE BUSCA
+
+Criar uma área de filtros elegante.
+
+Exemplo:
+
+[ 🔍 Buscar paciente... ]
+
+[ Status ]
+
+[ Objetivo ]
+
+[ Última consulta ]
+
+[ Filtros ]
+
+A busca deve ficar dentro de um container visual organizado.
+
+Não deixar vários inputs espalhados.
+
+11. LISTAGEM DE PACIENTES
+
+Se a quantidade de informações permitir, utilizar uma tabela profissional.
+
+Colunas:
+
+Paciente
+
+Objetivo
+
+Última consulta
+
+Próxima consulta
+
+Status
+
+Ações
+
+Exemplo visual:
+
+Avatar
+
+Maria Silva
+maria@email.com
+
+Emagrecimento
+
+12/08/2026
+
+20/08/2026
+
+● Ativo
+
+...
+
+O nome deve possuir destaque visual.
+
+Informações secundárias devem utilizar cinza.
+
+12. STATUS
+
+Criar badges modernos.
+
+Exemplo:
+
+● Ativo
+
+● Em acompanhamento
+
+● Inativo
+
+● Arquivado
+
+O badge deve ter:
+
+fundo muito claro;
+texto correspondente;
+pequeno indicador circular.
+
+Evitar badges extremamente coloridos.
+
+13. PERFIL DO PACIENTE
+
+Essa deve ser uma das telas mais bonitas da aplicação.
+
+No topo:
+
+Avatar do paciente
+
+Nome completo
+
+Idade
+
+Código
+
+Status
+
+Objetivo principal
+
+Ações:
+
+Editar
+
+Nova consulta
+
+Registrar evolução
+
+Criar cards:
+
+Peso atual
+
+IMC
+
+Última consulta
+
+Próxima consulta
+
+Criar navegação interna:
+
+Resumo
+
+Consultas
+
+Evolução
+
+Medidas
+
+Anamnese
+
+Documentos
+
+14. PERFIL — RESUMO
+
+Organizar o conteúdo em duas colunas no desktop.
+
+Coluna principal:
+
+Evolução de peso
+Histórico de consultas
+Observações recentes
+
+Coluna lateral:
+
+Informações pessoais
+Objetivos
+Condições
+Alergias
+Restrições
+Medicamentos
+
+No mobile:
+
+Transformar em uma única coluna.
+
+15. GRÁFICOS
+
+Os gráficos devem ter aparência profissional.
+
+Usar azul royal como cor principal.
+
+Evitar gráficos com várias cores sem necessidade.
+
+Exemplo:
+
+Peso:
+
+linha azul royal
+
+Área opcional muito suave em azul claro.
+
+Tooltip elegante.
+
+Grid discreto.
+
+Eixos em cinza.
+
+16. FORMULÁRIO DE PACIENTE
+
+Redesenhar completamente o formulário.
+
+Não utilizar aparência de formulário HTML simples.
+
+Organizar:
+
+Título
+
+Descrição
+
+Progresso
+
+Campos agrupados por seção.
+
+17. ETAPAS DO CADASTRO
+
+Manter:
+
+Pessoal
+
+Clínico
+
+Hábitos
+
+Mas transformar em um stepper visual.
+
+Exemplo:
+
+01 Pessoal ─── 02 Clínico ─── 03 Hábitos
+
+Etapa atual:
+
+azul royal
+
+Etapas concluídas:
+
+azul royal + check
+
+Etapas futuras:
+
+cinza
+
+18. CAMPOS
+
+Os inputs devem possuir:
+
+label acima;
+placeholder discreto;
+borda cinza;
+focus azul royal;
+mensagem de erro abaixo;
+descrição auxiliar quando necessário.
+
+Exemplo:
+
+Peso atual
+
+[ 78,5 ] kg
+
+Não colocar unidades dentro do placeholder.
+
+19. INPUT FOCUS
+
+Quando o usuário clicar no campo:
+
+border azul royal
+
+box-shadow azul extremamente discreto
+
+Exemplo conceitual:
+
+0 0 0 3px rgba(37, 99, 235, 0.10)
+
+20. BOTÕES
+
+Criar hierarquia clara.
+
+Primário
+
+Azul royal
+
+Texto branco
+
+Exemplo:
+
+Salvar paciente
+
+Secundário
+
+Branco
+
+Border cinza
+
+Exemplo:
+
+Cancelar
+
+Terciário
+
+Sem background
+
+Texto azul royal
+
+Perigo
+
+Vermelho apenas para ações destrutivas.
+
+Evitar transformar todos os botões em azul.
+
+21. MODAIS
+
+Criar modais modernos.
+
+Exemplo:
+
+Arquivar paciente
+
+Ícone
+
+Título
+
+Descrição
+
+Cancelar
+
+Arquivar paciente
+
+Modal com:
+
+fundo branco;
+border-radius 16px;
+sombra suave;
+overlay escuro/transparente.
+22. EMPTY STATES
+
+Todos os estados vazios devem ser visualmente trabalhados.
+
+Exemplo:
+
+Nenhum paciente cadastrado ainda
+
+Comece adicionando seu primeiro paciente para acompanhar sua evolução nutricional.
+
+[ + Novo paciente ]
+
+Adicionar ilustração/ícone discreto quando fizer sentido.
+
+Não deixar apenas texto solto no centro da tela.
+
+23. LOADING
+
+Implementar skeleton loading onde fizer sentido.
+
+Evitar deixar apenas:
+
+"Carregando..."
+
+Exemplo:
+
+Skeleton para:
+
+cards;
+tabela;
+perfil;
+gráficos.
+24. TOASTS
+
+Criar sistema consistente de notificações.
+
+Sucesso:
+
+✓ Paciente cadastrado com sucesso.
+
+Erro:
+
+Não foi possível salvar o paciente.
+
+Aviso:
+
+Existem alterações não salvas.
+
+Utilizar toasts discretos.
+
+Não utilizar alert() do navegador.
+
+25. RESPONSIVIDADE
+
+A interface precisa funcionar perfeitamente em:
+
+Desktop
+
+Tablet
+
+Mobile
+
+No mobile:
+
+sidebar vira menu;
+header adapta;
+cards ficam empilhados;
+tabelas podem virar cards;
+formulários ocupam largura total;
+botões importantes continuam acessíveis;
+stepper pode permitir scroll horizontal.
+26. MICROINTERAÇÕES
+
+Adicionar pequenas animações.
+
+Exemplos:
+
+hover em cards;
+hover em botões;
+transição de sidebar;
+abertura de modal;
+mudança de abas;
+toast;
+loading.
+
+As animações devem ser rápidas e discretas.
+
+Algo próximo de:
+
+150–250ms
+
+Evitar animações exageradas.
+
+27. ÍCONES
+
+Utilizar uma única biblioteca de ícones em todo o sistema.
+
+Caso o projeto já utilize uma biblioteca adequada, reutilizá-la.
+
+Os ícones devem seguir:
+
+mesmo estilo;
+mesmo tamanho;
+mesma espessura.
+
+Evitar misturar vários estilos de ícones.
+
+28. AVATARES
+
+Adicionar avatar visual para pacientes.
+
+Caso não exista foto:
+
+usar avatar com iniciais.
+
+Exemplo:
+
+Maria Silva
+
+MS
+
+Utilizar fundo azul claro e texto azul royal.
+
+29. TABELAS
+
+Todas as tabelas devem possuir:
+
+header cinza muito claro;
+linhas discretamente separadas;
+hover;
+paginação;
+estados vazios;
+loading;
+ações.
+
+Evitar linhas muito pesadas.
+
+30. FILTROS
+
+Filtros devem abrir em:
+
+popover;
+dropdown;
+drawer no mobile.
+
+Não ocupar espaço excessivo permanentemente.
+
+Mostrar quantidade de filtros ativos.
+
+Exemplo:
+
+Filtros 3
+
+31. DARK MODE
+
+Não implementar dark mode neste momento.
+
+Entretanto, estruturar o design system de forma que seja possível implementar futuramente.
+
+32. ACESSIBILIDADE
+
+Garantir:
+
+contraste adequado;
+foco visível;
+labels corretos;
+navegação por teclado;
+botões com textos claros;
+aria-label onde necessário;
+tamanho adequado dos elementos clicáveis.
+33. CONSISTÊNCIA
+
+Revisar todas as páginas existentes.
+
+Não quero que apenas a tela de pacientes fique bonita enquanto o restante do sistema continua com aparência antiga.
+
+Criar uma identidade visual consistente em:
+
+Login
+Dashboard
+Pacientes
+Perfil do paciente
+Formulários
+Agenda
+Consultas
+Evolução
+Configurações
+Modais
+Dropdowns
+Toasts
+Estados vazios
+Loading
+34. IMPORTANTE — NÃO ALTERAR FUNCIONALIDADES
+
+Esta tarefa é principalmente de redesign.
+
+Não remover:
+
+funcionalidades;
+rotas;
+banco;
+relacionamentos;
+autenticação;
+regras de negócio;
+validações;
+integração com Neon;
+integração com Vercel.
+
+Não alterar a lógica de negócio sem necessidade.
+
+Se alguma alteração funcional for necessária para viabilizar o novo design, preservar o comportamento existente.
+
+35. ARQUITETURA
+
+Antes de modificar:
+
+Analise os componentes atuais.
+Identifique componentes duplicados.
+Identifique componentes reutilizáveis.
+Crie componentes de UI reutilizáveis quando necessário.
+
+Por exemplo:
+
+Button
+Input
+Select
+Badge
+Card
+Modal
+Toast
+Avatar
+Table
+Tabs
+Stepper
+EmptyState
+Skeleton
+PageHeader
+
+Não duplicar estilos em dezenas de arquivos.
+
+Centralizar o design system.
+
+36. RESPONSABILIDADE DO ANTIGRAVITY
+
+Não quero simplesmente alterar cores.
+
+Quero que você faça uma análise de UX/UI e transforme a interface em um produto visualmente profissional.
+
+Faça melhorias de:
+
+espaçamento;
+hierarquia;
+tipografia;
+composição;
+navegação;
+agrupamento de informações;
+componentes;
+estados;
+feedback;
+responsividade;
+consistência.
+
+O resultado deve parecer um produto SaaS comercial pronto para ser apresentado a clientes.
+
+37. REFERÊNCIA VISUAL
+
+A sensação visual desejada é:
+
+"Software SaaS moderno para gestão de saúde"
+
+Não quero:
+
+"Painel administrativo genérico".
+
+Priorizar:
+
+bastante espaço em branco;
+azul royal elegante;
+cinza neutro;
+cards limpos;
+tipografia sofisticada;
+ícones consistentes;
+boa hierarquia;
+navegação intuitiva.
+38. CRITÉRIO FINAL
+
+Antes de finalizar, revisar toda a aplicação visualmente.
+
+Verificar:
+
+desktop;
+tablet;
+mobile;
+hover;
+focus;
+loading;
+empty state;
+erro;
+sucesso;
+modais;
+tabelas;
+formulários;
+sidebar;
+header;
+dashboard;
+perfil do paciente.
+
+Garantir que não existam:
+
+cores antigas em verde;
+componentes visualmente inconsistentes;
+botões sem padrão;
+espaçamentos aleatórios;
+fontes inconsistentes;
+ícones de estilos diferentes;
+páginas com aparência de sistemas diferentes.
+
+A aplicação final deve ter uma identidade única baseada em:
+
+AZUL ROYAL + CINZA + BRANCO
+
+com aparência de produto SaaS profissional, moderno e premium.
+
+INSTRUÇÃO FINAL
+
+Antes de alterar o código, analise a implementação atual e identifique quais componentes podem ser reaproveitados.
+
+Não reescreva o sistema inteiro.
+
+Faça o redesign de maneira incremental.
+
+Preserve funcionalidades e dados.
+
+Depois da implementação:
+
+executar build;
+corrigir erros;
+verificar console;
+verificar responsividade;
+verificar rotas;
+verificar componentes;
+verificar se o banco continua funcionando;
+verificar se a autenticação continua funcionando;
+verificar se o deploy na Vercel continua compatível.
+
+O objetivo é entregar uma aplicação visualmente muito mais profissional sem quebrar nenhuma funcionalidade existente.

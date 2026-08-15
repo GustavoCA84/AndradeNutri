@@ -28,7 +28,6 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
     atividade_fisica: patient?.atividade_fisica ?? true,
     atividade_fisica_descricao: patient?.atividade_fisica_descricao || '',
     observacoes: patient?.observacoes || '',
-    // Anamnese
     motivo_consulta: patient?.motivo_consulta || '',
     historico_dietas: patient?.historico_dietas || '',
     tentativas_anteriores: patient?.tentativas_anteriores || '',
@@ -47,7 +46,6 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
 
   const [errors, setErrors] = useState({});
 
-  // Cálculo da Idade
   const calcularIdade = (dataNasc) => {
     if (!dataNasc) return null;
     const hoje = new Date();
@@ -60,11 +58,10 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
     return idade >= 0 ? idade : null;
   };
 
-  // Cálculo do IMC
   const calcularIMC = (peso, altura) => {
     if (!peso || !altura) return null;
     const p = parseFloat(peso);
-    const a = parseFloat(altura) / 100; // cm para m
+    const a = parseFloat(altura) / 100;
     if (isNaN(p) || isNaN(a) || a <= 0) return null;
     const imc = p / (a * a);
     return imc.toFixed(1);
@@ -81,7 +78,6 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
     return 'Obesidade Grau III (Mórbida)';
   };
 
-  // Formatadores de Entrada Inteligentes
   const formatarWhatsapp = (val) => {
     const numbers = val.replace(/\D/g, '');
     if (numbers.length <= 10) {
@@ -100,7 +96,6 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
     return val;
   };
 
-  // Manipulação do checkbox com regra "Nenhum"
   const handleCheckboxGroup = (field, item) => {
     setFormData((prev) => {
       const currentList = prev[field] || [];
@@ -119,7 +114,6 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
   const handleNextStep = () => {
     const errs = {};
     if (step === 1) {
-      // Validação Nome
       const nomeLimpo = formData.nome.trim().replace(/\s+/g, ' ');
       if (!nomeLimpo) {
         errs.nome = 'O nome completo é obrigatório.';
@@ -127,12 +121,10 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
         errs.nome = 'Por favor, informe ao menos nome e sobrenome.';
       }
 
-      // Validação Data Nasc
       if (formData.data_nascimento && new Date(formData.data_nascimento) > new Date()) {
         errs.data_nascimento = 'A data de nascimento não pode ser futura.';
       }
 
-      // Validação Email
       if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
         errs.email = 'E-mail em formato inválido.';
       }
@@ -152,41 +144,49 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
   const imcCalculado = calcularIMC(formData.peso_inicial, formData.altura);
   const idadeCalculada = calcularIdade(formData.data_nascimento);
 
+  const stepsList = [
+    { num: 1, label: 'Pessoal' },
+    { num: 2, label: 'Clínica' },
+    { num: 3, label: 'Hábitos' },
+    { num: 4, label: 'Anamnese' },
+    { num: 5, label: 'Resumo' },
+  ];
+
   return (
     <div className="modal-overlay">
       <div className="modal-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--primary)' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--primary)' }}>
             {patient ? 'Editar Paciente' : 'Novo Cadastro de Paciente'}
           </h2>
           <button
             onClick={onClose}
-            style={{ border: 'none', background: 'transparent', fontSize: '20px', cursor: 'pointer' }}
+            style={{ border: 'none', background: 'transparent', fontSize: '20px', cursor: 'pointer', color: 'var(--text-muted)' }}
           >
             ✖
           </button>
         </div>
 
-        {/* Abas do Formulário */}
-        <div className="patient-tabs-header">
-          <button className={`tab-btn ${step === 1 ? 'active' : ''}`} onClick={() => setStep(1)}>
-            1. Pessoal
-          </button>
-          <button className={`tab-btn ${step === 2 ? 'active' : ''}`} onClick={() => setStep(2)}>
-            2. Clínica
-          </button>
-          <button className={`tab-btn ${step === 3 ? 'active' : ''}`} onClick={() => setStep(3)}>
-            3. Hábitos
-          </button>
-          <button className={`tab-btn ${step === 4 ? 'active' : ''}`} onClick={() => setStep(4)}>
-            4. Anamnese
-          </button>
-          <button className={`tab-btn ${step === 5 ? 'active' : ''}`} onClick={() => setStep(5)}>
-            5. Resumo
-          </button>
+        {/* Stepper Visual SaaS */}
+        <div className="stepper-bar">
+          {stepsList.map((s) => {
+            const isActive = step === s.num;
+            const isCompleted = step > s.num;
+            return (
+              <div
+                key={s.num}
+                className={`stepper-step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                onClick={() => setStep(s.num)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="stepper-number">{isCompleted ? '✓' : s.num}</div>
+                <span>{s.label}</span>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Etapa 1: Dados Pessoais */}
+        {/* Etapa 1: Pessoal */}
         {step === 1 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div className="form-group">
@@ -211,7 +211,7 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
                   onChange={(e) => setFormData({ ...formData, data_nascimento: e.target.value })}
                 />
                 {idadeCalculada !== null && (
-                  <span style={{ fontSize: '12px', color: 'var(--primary)', marginTop: '4px' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--primary)', marginTop: '4px', fontWeight: '600' }}>
                     Idade calculada: {idadeCalculada} anos
                   </span>
                 )}
@@ -295,7 +295,7 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
           </div>
         )}
 
-        {/* Etapa 2: Dados Clínicos */}
+        {/* Etapa 2: Clínica */}
         {step === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
@@ -327,7 +327,7 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
                   className="form-input"
                   value={imcCalculado ? `${imcCalculado} kg/m²` : '--'}
                   disabled
-                  style={{ backgroundColor: '#f1f5f9', fontWeight: 'bold' }}
+                  style={{ backgroundColor: 'var(--bg)', fontWeight: 'bold', color: 'var(--primary)' }}
                 />
                 {imcCalculado && (
                   <span style={{ fontSize: '11px', color: 'var(--primary-hover)', fontWeight: '600' }}>
@@ -414,7 +414,7 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
           </div>
         )}
 
-        {/* Etapa 3: Hábitos & Rotina */}
+        {/* Etapa 3: Hábitos */}
         {step === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
@@ -481,21 +481,10 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
                 <option value="Extremamente ativo">Extremamente ativo</option>
               </select>
             </div>
-
-            <div className="form-group">
-              <label className="form-label">Detalhes dos Exercícios</label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Ex: Musculação 4x na semana"
-                value={formData.atividade_fisica_descricao}
-                onChange={(e) => setFormData({ ...formData, atividade_fisica_descricao: e.target.value })}
-              />
-            </div>
           </div>
         )}
 
-        {/* Etapa 4: Anamnese Nutricional Detalhada */}
+        {/* Etapa 4: Anamnese */}
         {step === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div className="form-group">
@@ -538,24 +527,13 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
                 </select>
               </div>
             </div>
-
-            <div className="form-group">
-              <label className="form-label">Alimentos Preferidos / Alimentos que Não Gosta</label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Gosta de frutas; Não come jiló e fígado"
-                value={formData.preferencias_alimentares}
-                onChange={(e) => setFormData({ ...formData, preferencias_alimentares: e.target.value })}
-              />
-            </div>
           </div>
         )}
 
-        {/* Etapa 5: Resumo e Salvar */}
+        {/* Etapa 5: Resumo */}
         {step === 5 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--primary-hover)' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--primary)' }}>
               Confirmação dos Dados do Paciente
             </h3>
             <div
@@ -575,13 +553,11 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
               <div><strong>Contato:</strong> WhatsApp {formData.whatsapp || 'N/I'} | E-mail: {formData.email || 'N/I'}</div>
               <div><strong>Antropometria:</strong> {formData.peso_inicial || '--'} kg | {formData.altura || '--'} cm | IMC: {imcCalculado ? `${imcCalculado} (${classificarIMC(imcCalculado)})` : 'N/I'}</div>
               <div><strong>Objetivos:</strong> {formData.objetivos.join(', ')}</div>
-              <div><strong>Condições de Saúde:</strong> {formData.patologias.join(', ')}</div>
-              <div><strong>Restrições:</strong> {formData.restricoes_alimentares.join(', ')}</div>
             </div>
           </div>
         )}
 
-        {/* Botões de Ação do Modal */}
+        {/* Botões do Stepper */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
           {step > 1 ? (
             <button className="action-btn-sm" onClick={() => setStep((prev) => prev - 1)}>

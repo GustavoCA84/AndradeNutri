@@ -7,7 +7,7 @@ import '../dashboard.css';
 
 export default function Dashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' | 'pacientes'
-  const [selectedPatientId, setSelectedPatientId] = useState(null); // ID do paciente para ver perfil
+  const [selectedPatientId, setSelectedPatientId] = useState(null);
 
   // Dados do Dashboard
   const [totalPacientes, setTotalPacientes] = useState(0);
@@ -20,7 +20,6 @@ export default function Dashboard({ user, onLogout }) {
   const [pacientesList, setPacientesList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('Ativo');
-  const [objetivoFilter, setObjetivoFilter] = useState('');
   const [sortBy, setSortBy] = useState('nome');
 
   // Modais
@@ -32,14 +31,20 @@ export default function Dashboard({ user, onLogout }) {
   const [savingLoading, setSavingLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // 1. Inicializar Nutricionista e Carregar Dados do Dashboard
+  // Obter Iniciais do Usuário para o Avatar
+  const getInitials = (name) => {
+    if (!name) return 'AN';
+    const parts = name.trim().split(' ');
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     setErrorMsg('');
     try {
       let currentNutriaId = null;
 
-      // Buscar se nutricionista já existe na tabela public.nutricionistas
       const { data: nutriData } = await client
         .from('nutricionistas')
         .select('id')
@@ -66,7 +71,6 @@ export default function Dashboard({ user, onLogout }) {
 
       setNutriaId(currentNutriaId);
 
-      // Buscar Pacientes da Nutricionista
       const { data: pacientes, error: pacErr } = await client
         .from('pacientes')
         .select('*')
@@ -80,7 +84,6 @@ export default function Dashboard({ user, onLogout }) {
       const ativos = pacList.filter((p) => (p.status || 'Ativo') === 'Ativo').length;
       setPacientesAtivosCount(ativos);
 
-      // Buscar Consultas
       const patientIds = pacList.map((p) => p.id);
       if (patientIds.length === 0) {
         setConsultasSemana(0);
@@ -97,7 +100,6 @@ export default function Dashboard({ user, onLogout }) {
       if (consErr) throw consErr;
       const consultsList = consultas || [];
 
-      // Consultas da semana
       const now = new Date();
       const dayOfWeek = now.getDay();
       const startOfWeek = new Date(now);
@@ -116,7 +118,6 @@ export default function Dashboard({ user, onLogout }) {
 
       setConsultasSemana(countSemana);
 
-      // Pacientes sem retorno (>30 dias)
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(now.getDate() - 30);
 
@@ -165,12 +166,10 @@ export default function Dashboard({ user, onLogout }) {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
-  // Salvar/Editar Paciente (Com validações de Segurança no Backend/Query)
   const handleSavePatient = async (formData) => {
     setSavingLoading(true);
     try {
       if (editingPatient) {
-        // Atualizar
         const { error } = await client
           .from('pacientes')
           .update({
@@ -182,7 +181,6 @@ export default function Dashboard({ user, onLogout }) {
 
         if (error) throw error;
       } else {
-        // Criar Novo Paciente
         const codigoAmigavel = 'PAC-' + Math.floor(100000 + Math.random() * 900000);
         const { error } = await client.from('pacientes').insert([
           {
@@ -207,7 +205,6 @@ export default function Dashboard({ user, onLogout }) {
     }
   };
 
-  // Arquivar ou Alterar Status do Paciente
   const handleToggleArchive = async (paciente) => {
     try {
       const newStatus = paciente.status === 'Arquivado' ? 'Ativo' : 'Arquivado';
@@ -225,26 +222,18 @@ export default function Dashboard({ user, onLogout }) {
     }
   };
 
-  // Filtragem Dinâmica da Tabela de Pacientes
   const filteredPatients = pacientesList
     .filter((p) => {
-      // Filtro de Status
       if (statusFilter && statusFilter !== 'TODOS') {
         if ((p.status || 'Ativo') !== statusFilter) return false;
       }
 
-      // Busca por Nome, WhatsApp ou Email
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         const nomeMatch = p.nome?.toLowerCase().includes(q);
         const phoneMatch = p.whatsapp?.includes(q);
         const emailMatch = p.email?.toLowerCase().includes(q);
         if (!nomeMatch && !phoneMatch && !emailMatch) return false;
-      }
-
-      // Filtro por Objetivo
-      if (objetivoFilter) {
-        if (!p.objetivos?.includes(objetivoFilter)) return false;
       }
 
       return true;
@@ -267,7 +256,7 @@ export default function Dashboard({ user, onLogout }) {
 
   return (
     <div className="dashboard-layout">
-      {/* Sidebar Fixo */}
+      {/* Sidebar Fixo SaaS */}
       <aside className="sidebar">
         <div className="sidebar-top">
           <div className="sidebar-brand">
@@ -301,8 +290,11 @@ export default function Dashboard({ user, onLogout }) {
 
         <div className="sidebar-footer">
           <div className="user-profile-summary">
-            <span className="user-name-label">{user.name || 'Nutricionista'}</span>
-            <span className="user-email-label">{user.email}</span>
+            <div className="user-avatar">{getInitials(user.name)}</div>
+            <div className="user-profile-details">
+              <span className="user-name-label">{user.name || 'Nutricionista'}</span>
+              <span className="user-email-label">{user.email}</span>
+            </div>
           </div>
           <button className="btn-logout" onClick={handleLogout}>
             <span>🚪</span>
@@ -314,7 +306,6 @@ export default function Dashboard({ user, onLogout }) {
       {/* Conteúdo Principal */}
       <main className="dashboard-main">
         {selectedPatientId ? (
-          /* Visualização de Perfil do Paciente Selecionado */
           <PatientProfile
             patientId={selectedPatientId}
             nutriaId={nutriaId}
@@ -322,11 +313,10 @@ export default function Dashboard({ user, onLogout }) {
           />
         ) : (
           <>
-            {/* Cabeçalho da Seção */}
             <div className="dashboard-header-bar">
               <div>
                 <h1 className="dashboard-heading">
-                  {activeTab === 'dashboard' ? 'Visão Geral' : 'Módulo de Pacientes'}
+                  {activeTab === 'dashboard' ? 'Visão Geral' : 'Gestão de Pacientes'}
                 </h1>
                 <p className="dashboard-subheading">
                   {activeTab === 'dashboard'
@@ -357,7 +347,6 @@ export default function Dashboard({ user, onLogout }) {
             )}
 
             {activeTab === 'dashboard' ? (
-              /* Aba 1: Dashboard Principal */
               <div className="dashboard-cards-grid">
                 <div className="metric-card">
                   <div className="metric-card-header">
@@ -414,9 +403,7 @@ export default function Dashboard({ user, onLogout }) {
                 </div>
               </div>
             ) : (
-              /* Aba 2: Listagem Completa de Pacientes */
               <div className="metric-card full-width">
-                {/* Barra de Filtros e Busca */}
                 <div className="filters-bar">
                   <input
                     type="text"
@@ -449,9 +436,8 @@ export default function Dashboard({ user, onLogout }) {
                   </select>
                 </div>
 
-                {/* Tabela de Pacientes */}
                 {loading ? (
-                  <p>Carregando pacientes...</p>
+                  <p style={{ color: 'var(--text-secondary)', padding: '16px' }}>Carregando pacientes...</p>
                 ) : filteredPatients.length === 0 ? (
                   <div className="empty-patients-msg">
                     {searchQuery || statusFilter !== 'Ativo'
@@ -474,11 +460,16 @@ export default function Dashboard({ user, onLogout }) {
                       {filteredPatients.map((p) => (
                         <tr key={p.id}>
                           <td>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ fontWeight: '600', color: 'var(--primary)' }}>{p.nome}</span>
-                              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                                {p.codigo_amigavel || 'PAC-' + p.id.slice(0, 6).toUpperCase()}
-                              </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <div className="user-avatar" style={{ width: '32px', height: '32px', fontSize: '12px' }}>
+                                {getInitials(p.nome)}
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontWeight: '600', color: 'var(--primary)' }}>{p.nome}</span>
+                                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                                  {p.codigo_amigavel || 'PAC-' + p.id.slice(0, 6).toUpperCase()}
+                                </span>
+                              </div>
                             </div>
                           </td>
                           <td>
