@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { client } from '../lib/neon';
 import Logo from './Logo';
-import PatientFormModal from './PatientFormModal';
+import PatientFormView from './PatientFormView';
 import PatientProfile from './PatientProfile';
 import '../dashboard.css';
 
@@ -24,7 +24,7 @@ export default function Dashboard({ user, onLogout }) {
   const [pacientesUltimasConsultas, setPacientesUltimasConsultas] = useState({});
 
   // Modais
-  const [showPatientModal, setShowPatientModal] = useState(false);
+  const [showPatientForm, setShowPatientForm] = useState(false);
   const [editingPatient, setEditingPatient] = useState(null);
   const [archiveConfirmation, setArchiveConfirmation] = useState(null);
 
@@ -202,7 +202,7 @@ export default function Dashboard({ user, onLogout }) {
         successPatientId = data.id;
       }
 
-      setShowPatientModal(false);
+      setShowPatientForm(false);
       setEditingPatient(null);
       fetchDashboardData();
       
@@ -281,9 +281,10 @@ export default function Dashboard({ user, onLogout }) {
 
           <nav className="sidebar-nav">
             <button
-              className={`nav-item ${activeTab === 'dashboard' && !selectedPatientId ? 'active' : ''}`}
+              className={`nav-item ${activeTab === 'dashboard' && !selectedPatientId && !showPatientForm ? 'active' : ''}`}
               onClick={() => {
                 setSelectedPatientId(null);
+                setShowPatientForm(false);
                 setActiveTab('dashboard');
               }}
             >
@@ -291,9 +292,10 @@ export default function Dashboard({ user, onLogout }) {
               <span>Dashboard</span>
             </button>
             <button
-              className={`nav-item ${activeTab === 'pacientes' && !selectedPatientId ? 'active' : ''}`}
+              className={`nav-item ${activeTab === 'pacientes' && !selectedPatientId && !showPatientForm ? 'active' : ''}`}
               onClick={() => {
                 setSelectedPatientId(null);
+                setShowPatientForm(false);
                 setActiveTab('pacientes');
               }}
             >
@@ -320,7 +322,14 @@ export default function Dashboard({ user, onLogout }) {
 
       {/* Conteúdo Principal */}
       <main className="dashboard-main">
-        {selectedPatientId ? (
+        {showPatientForm ? (
+          <PatientFormView
+            patient={editingPatient}
+            loading={savingLoading}
+            onBack={() => setShowPatientForm(false)}
+            onSave={handleSavePatient}
+          />
+        ) : selectedPatientId ? (
           <PatientProfile
             patientId={selectedPatientId}
             nutriaId={nutriaId}
@@ -346,7 +355,7 @@ export default function Dashboard({ user, onLogout }) {
                   style={{ width: 'auto', padding: '10px 20px' }}
                   onClick={() => {
                     setEditingPatient(null);
-                    setShowPatientModal(true);
+                    setShowPatientForm(true);
                   }}
                 >
                   + Novo Paciente
@@ -505,7 +514,7 @@ export default function Dashboard({ user, onLogout }) {
                                 title="Editar"
                                 onClick={() => {
                                   setEditingPatient(p);
-                                  setShowPatientModal(true);
+                                  setShowPatientForm(true);
                                 }}
                               >
                                 ✏️
@@ -529,16 +538,6 @@ export default function Dashboard({ user, onLogout }) {
           </>
         )}
       </main>
-
-      {/* Modal Cadastro/Edição */}
-      {showPatientModal && (
-        <PatientFormModal
-          patient={editingPatient}
-          loading={savingLoading}
-          onClose={() => setShowPatientModal(false)}
-          onSave={handleSavePatient}
-        />
-      )}
 
       {/* Modal Confirmação Arquivamento */}
       {archiveConfirmation && (

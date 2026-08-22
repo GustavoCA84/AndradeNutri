@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function PatientFormModal({ patient, onClose, onSave, loading }) {
+export default function PatientFormView({ patient, onBack, onSave, loading }) {
   const [step, setStep] = useState(1); // 1: Pessoal, 2: Clínico, 3: Hábitos
   const [formData, setFormData] = useState({
     nome: patient?.nome || '',
@@ -135,15 +135,17 @@ export default function PatientFormModal({ patient, onClose, onSave, loading }) 
   ];
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-card">
+    <div className="metric-card full-width" style={{ marginTop: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div>
+          <button className="action-btn-sm" onClick={onBack}>
+            ← Voltar para lista
+          </button>
+        </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--primary)' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--primary)' }}>
             {patient ? 'Editar Paciente' : 'Novo Paciente'}
           </h2>
-          <button onClick={onClose} style={{ border: 'none', background: 'transparent', fontSize: '20px', cursor: 'pointer', color: 'var(--text-muted)' }}>
-            ✖
-          </button>
         </div>
 
         <div className="stepper-bar">
