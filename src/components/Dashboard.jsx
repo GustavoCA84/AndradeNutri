@@ -21,6 +21,7 @@ export default function Dashboard({ user, onLogout }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('Ativo');
   const [sortBy, setSortBy] = useState('nome');
+  const [pacientesUltimasConsultas, setPacientesUltimasConsultas] = useState({});
 
   // Modais
   const [showPatientModal, setShowPatientModal] = useState(false);
@@ -130,6 +131,7 @@ export default function Dashboard({ user, onLogout }) {
       });
 
       const semRetorno = [];
+      const ultimas = {};
 
       pacList.forEach((paciente) => {
         const userConsultas = pacienteConsultasMap[paciente.id] || [];
@@ -137,6 +139,7 @@ export default function Dashboard({ user, onLogout }) {
           userConsultas.sort((a, b) => new Date(b.data_consulta) - new Date(a.data_consulta));
           const ultimaConsulta = userConsultas[0];
           const dataUltima = new Date(ultimaConsulta.data_consulta);
+          ultimas[paciente.id] = ultimaConsulta.data_consulta;
 
           const temRetornoAgendado = userConsultas.some((c) => {
             if (!c.proximo_retorno) return false;
@@ -154,6 +157,7 @@ export default function Dashboard({ user, onLogout }) {
       });
 
       setPacientesSemRetorno(semRetorno);
+      setPacientesUltimasConsultas(ultimas);
     } catch (err) {
       console.error('Erro ao carregar dashboard:', err);
       setErrorMsg('Não foi possível carregar dados em tempo real.');
@@ -169,6 +173,8 @@ export default function Dashboard({ user, onLogout }) {
   const handleSavePatient = async (formData) => {
     setSavingLoading(true);
     try {
+      let successPatientId = null;
+
       if (editingPatient) {
         const { error } = await client
           .from('pacientes')
@@ -180,23 +186,32 @@ export default function Dashboard({ user, onLogout }) {
           .eq('nutricionista_id', nutriaId);
 
         if (error) throw error;
+        successPatientId = editingPatient.id;
       } else {
         const codigoAmigavel = 'PAC-' + Math.floor(100000 + Math.random() * 900000);
-        const { error } = await client.from('pacientes').insert([
+        const { data, error } = await client.from('pacientes').insert([
           {
             ...formData,
             nutricionista_id: nutriaId,
             codigo_amigavel: codigoAmigavel,
             status: 'Ativo',
           },
-        ]);
+        ]).select('id').single();
 
         if (error) throw error;
+        successPatientId = data.id;
       }
 
       setShowPatientModal(false);
       setEditingPatient(null);
       fetchDashboardData();
+      
+      // Mostrar mensagem de sucesso e redirecionar
+      alert('Paciente cadastrado com sucesso!');
+      if (successPatientId) {
+        setSelectedPatientId(successPatientId);
+        setActiveTab('pacientes');
+      }
     } catch (err) {
       console.error('Erro ao salvar paciente:', err);
       alert('Ocorreu um erro ao salvar o paciente. Tente novamente.');
@@ -448,11 +463,10 @@ export default function Dashboard({ user, onLogout }) {
                   <table className="data-table">
                     <thead>
                       <tr>
-                        <th>Código / Nome</th>
-                        <th>Contato</th>
+                        <th>Nome / Contato</th>
                         <th>Status</th>
                         <th>Objetivo</th>
-                        <th>Cadastro</th>
+                        <th>Última Consulta</th>
                         <th>Ações</th>
                       </tr>
                     </thead>
@@ -466,16 +480,8 @@ export default function Dashboard({ user, onLogout }) {
                               </div>
                               <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <span style={{ fontWeight: '600', color: 'var(--primary)' }}>{p.nome}</span>
-                                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                                  {p.codigo_amigavel || 'PAC-' + p.id.slice(0, 6).toUpperCase()}
-                                </span>
+                                <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{p.whatsapp || p.email || 'Sem contato'}</span>
                               </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div style={{ display: 'flex', flexDirection: 'column', fontSize: '13px' }}>
-                              <span>{p.whatsapp || '--'}</span>
-                              <span style={{ color: 'var(--text-secondary)' }}>{p.email || ''}</span>
                             </div>
                           </td>
                           <td>
@@ -484,7 +490,7 @@ export default function Dashboard({ user, onLogout }) {
                             </span>
                           </td>
                           <td>{p.objetivos?.join(', ') || 'Saúde Geral'}</td>
-                          <td>{new Date(p.created_at).toLocaleDateString('pt-BR')}</td>
+                          <td>{pacientesUltimasConsultas[p.id] ? new Date(pacientesUltimasConsultas[p.id]).toLocaleDateString('pt-BR') : 'Sem consultas'}</td>
                           <td>
                             <div className="actions-cell">
                               <button

@@ -62,7 +62,7 @@ export default function Login({ onLoginSuccess, navigateToRegister }) {
             <div className="left-logo-wrapper">
               <Logo className="left-logo-svg" />
             </div>
-            <span className="left-brand-name">NutriMi</span>
+            <span className="left-brand-name">AndradeNutri</span>
           </div>
 
           {/* Título & Subtítulo */}
@@ -71,10 +71,10 @@ export default function Login({ onLoginSuccess, navigateToRegister }) {
               Nutrição inteligente,<br />cuidado personalizado
             </h1>
             <p className="left-subtitle">
-              Melhor que NutriMI, Resultado é Aqui !
+              Melhor que NutriMih, Resultado é Aqui !
             </p>
             <h2 className="nutri-andrade-highlight">
-              NutriAndrade
+              AndradeNutri
             </h2>
           </div>
 
@@ -111,7 +111,7 @@ export default function Login({ onLoginSuccess, navigateToRegister }) {
           <div className="login-form-header">
             <div className="form-brand-row">
               <Logo className="right-logo-svg" />
-              <span className="right-brand-name">NutriMi</span>
+              <span className="right-brand-name">AndradeNutri</span>
             </div>
             <h2 className="form-welcome-title">Bem-vindo de volta!</h2>
             <p className="form-welcome-subtitle">Acesse sua conta para continuar</p>
@@ -204,7 +204,7 @@ export default function Login({ onLoginSuccess, navigateToRegister }) {
 
           {/* Rodapé Discreto */}
           <footer className="login-footer">
-            <span>© 2026 NutriMi</span>
+            <span>© 2026 AndradeNutri</span>
             <span>•</span>
             <a href="#termos" onClick={(e) => e.preventDefault()}>Termos de uso</a>
             <span>•</span>
