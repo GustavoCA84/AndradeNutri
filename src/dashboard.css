@@ -1,52 +1,72 @@
-/* Sidebar & Dashboard Layout SaaS Premium */
+/* =========================================================
+   ANDRADENUTRI — DESIGN SYSTEM & SAAS DASHBOARD STYLES
+   Suporte Completo a Light Mode e Dark Mode
+   ========================================================= */
+
+/* Layout Global do Dashboard */
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
   width: 100%;
   background-color: var(--bg);
+  color: var(--text-primary);
+  position: relative;
 }
 
+/* =========================================================
+   SIDEBAR (Barra Lateral)
+   ========================================================= */
 .sidebar {
-  width: 260px;
-  background-color: var(--card-bg);
+  width: 270px;
+  background-color: var(--sidebar-bg);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 24px 16px;
+  padding: 28px 20px;
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   z-index: 100;
-  box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px);
 }
 
 .sidebar-top {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
 }
 
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 8px;
+  padding: 0 6px;
 }
 
 .sidebar-logo {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 2px 6px rgba(16, 185, 129, 0.3));
 }
 
 .sidebar-brand-name {
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 800;
-  color: var(--primary);
+  color: var(--text-primary);
   letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
+.sidebar-brand-name span {
+  color: var(--primary);
+}
+
+/* Navegação da Sidebar */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -56,63 +76,146 @@
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   padding: 12px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   font-size: 14px;
   font-weight: 600;
   color: var(--text-secondary);
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   width: 100%;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
 }
 
 .nav-item:hover {
   background-color: var(--primary-light);
-  color: var(--primary-hover);
+  color: var(--primary);
+  transform: translateX(3px);
 }
 
 .nav-item.active {
-  background-color: var(--primary-light);
+  background: var(--primary-light);
   color: var(--primary);
-  border-left: 3px solid var(--primary);
+  border-color: rgba(16, 185, 129, 0.2);
   font-weight: 700;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.12);
 }
 
 .nav-icon {
   font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Rodapé da Sidebar */
 .sidebar-footer {
   border-top: 1px solid var(--border);
-  padding-top: 16px;
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
+/* Botão Alternador de Tema */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.theme-toggle-track {
+  width: 36px;
+  height: 20px;
+  background-color: var(--border);
+  border-radius: var(--radius-full);
+  position: relative;
+  transition: background-color 0.25s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn.dark .theme-toggle-track {
+  background-color: var(--primary);
+}
+
+.theme-toggle-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle-btn.dark .theme-toggle-thumb {
+  transform: translateX(16px);
+  background-color: #0f172a;
+}
+
+.theme-icon {
+  width: 11px;
+  height: 11px;
+}
+
+.sun-icon {
+  color: #f59e0b;
+}
+
+.moon-icon {
+  color: #38bdf8;
+}
+
+.theme-toggle-text {
+  flex: 1;
+  text-align: left;
+}
+
+/* Perfil do Usuário na Sidebar */
 .user-profile-summary {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 4px 8px;
+  padding: 4px 6px;
 }
 
 .user-avatar {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: var(--primary-light);
-  color: var(--primary);
+  background: var(--primary-gradient);
+  color: white;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #bfdbfe;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  flex-shrink: 0;
 }
 
 .user-profile-details {
@@ -123,7 +226,7 @@
 
 .user-name-label {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
@@ -132,7 +235,7 @@
 
 .user-email-label {
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -143,12 +246,12 @@
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   font-size: 13px;
   font-weight: 600;
   color: var(--error);
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
+  background-color: var(--error-light);
+  border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
@@ -156,29 +259,35 @@
 }
 
 .btn-logout:hover {
-  background-color: #fee2e2;
+  background-color: rgba(239, 68, 68, 0.22);
+  transform: translateY(-1px);
 }
 
-/* Main Dashboard Area */
+/* =========================================================
+   CONTEÚDO PRINCIPAL (Main Dashboard)
+   ========================================================= */
 .dashboard-main {
-  margin-left: 260px;
+  margin-left: 270px;
   flex: 1;
-  padding: 36px 40px;
-  max-width: 1200px;
+  padding: 36px 48px;
+  max-width: 1300px;
+  width: calc(100% - 270px);
 }
 
 .dashboard-header-bar {
   margin-bottom: 32px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  gap: 20px;
 }
 
 .dashboard-heading {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.7px;
+  line-height: 1.2;
 }
 
 .dashboard-subheading {
@@ -187,29 +296,55 @@
   margin-top: 4px;
 }
 
-/* Cards Grid SaaS Premium */
+/* =========================================================
+   CARDS DE MÉTRICAS & INDICADORES
+   ========================================================= */
 .dashboard-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 24px;
-  align-items: start;
+  align-items: stretch;
+  margin-bottom: 32px;
 }
 
 .metric-card {
   background-color: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   padding: 24px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--primary-gradient);
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
 .metric-card:hover {
   box-shadow: var(--shadow-md);
-  border-color: #cbd5e1;
+  border-color: rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
+}
+
+.metric-card:hover::before {
+  opacity: 1;
+}
+
+.metric-card.full-width {
+  grid-column: 1 / -1;
 }
 
 .metric-card-header {
@@ -220,44 +355,333 @@
 
 .metric-title {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .metric-badge-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background-color: var(--primary-light);
   color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
 }
 
 .metric-value {
-  font-size: 34px;
+  font-size: 38px;
   font-weight: 800;
   color: var(--text-primary);
   line-height: 1;
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
 }
 
 .metric-description {
   font-size: 13px;
   color: var(--text-muted);
+  line-height: 1.4;
 }
 
-/* Status Badges Discretos */
+/* =========================================================
+   BOTÕES GLOBAIS
+   ========================================================= */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  background: var(--primary-gradient);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--primary-glow);
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  filter: brightness(1.05);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+  box-shadow: none;
+}
+
+.action-btn-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background-color: var(--card-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.action-btn-sm:hover {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border-color: rgba(16, 185, 129, 0.3);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   FORMULÁRIOS & ENTRADAS DE DADOS
+   ========================================================= */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: -0.1px;
+}
+
+.form-input,
+textarea.form-input,
+.filter-select,
+.search-input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.filter-select:focus,
+.search-input:focus {
+  border-color: var(--primary);
+  background-color: var(--card-bg);
+  box-shadow: 0 0 0 3px var(--primary-focus);
+}
+
+.form-input::placeholder,
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* =========================================================
+   ABAS SEGMENTADAS (Tabs System)
+   ========================================================= */
+.patient-tabs-header {
+  display: flex;
+  gap: 8px;
+  background-color: var(--bg-secondary);
+  padding: 6px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  width: fit-content;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background-color: var(--card-bg);
+  color: var(--primary);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+/* Sub-abas internas */
+.sub-tabs-bar {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.sub-tab-btn {
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.sub-tab-btn:hover {
+  color: var(--primary);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.sub-tab-btn.active {
+  background: var(--primary-gradient);
+  color: white;
+  border-color: transparent;
+  box-shadow: var(--primary-glow);
+}
+
+/* =========================================================
+   PERFIL DO PACIENTE (Header & Cards)
+   ========================================================= */
+.profile-header-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-header-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: var(--primary-gradient);
+}
+
+.profile-main-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  color: white;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+  flex-shrink: 0;
+}
+
+.profile-details-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.profile-patient-name {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.patient-code-tag {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.profile-contact-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.contact-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
 .status-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  border-radius: 20px;
+  border-radius: var(--radius-full);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .status-badge::before {
@@ -268,156 +692,31 @@
 }
 
 .status-badge.ativo {
-  background-color: var(--primary-light);
-  color: var(--primary);
-  border: 1px solid #bfdbfe;
+  background-color: var(--success-light);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.25);
 }
 .status-badge.ativo::before {
-  background-color: var(--primary);
-}
-
-.status-badge.em-acompanhamento {
-  background-color: #f0fdf4;
-  color: #16a34a;
-  border: 1px solid #bbf7d0;
-}
-.status-badge.em-acompanhamento::before {
-  background-color: #16a34a;
-}
-
-.status-badge.inativo {
-  background-color: #f8fafc;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
-}
-.status-badge.inativo::before {
-  background-color: #94a3b8;
+  background-color: var(--success);
 }
 
 .status-badge.arquivado {
-  background-color: #fff7ed;
-  color: #c2410c;
-  border: 1px solid #ffedd5;
+  background-color: var(--warning-light);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.25);
 }
 .status-badge.arquivado::before {
-  background-color: #ea580c;
+  background-color: var(--warning);
 }
 
-/* Stepper Visual no Modal */
-.stepper-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 16px;
-  margin-bottom: 24px;
-}
-
-.stepper-step {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.stepper-number {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background-color: var(--bg);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-}
-
-.stepper-step.active {
-  color: var(--primary);
-}
-
-.stepper-step.active .stepper-number {
-  background-color: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-
-.stepper-step.completed {
-  color: var(--text-primary);
-}
-
-.stepper-step.completed .stepper-number {
-  background-color: var(--primary-light);
-  color: var(--primary);
-  border-color: #bfdbfe;
-}
-
-/* Modal Layout */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-}
-
-.modal-card {
-  background-color: var(--card-bg);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-lg);
+/* =========================================================
+   TABELA DE DADOS (Data Table)
+   ========================================================= */
+.table-container {
   width: 100%;
-  max-width: 650px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  animation: fadeIn 0.2s ease-out;
-}
-
-/* Tables & Filters */
-.filters-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 24px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.search-input {
-  flex: 1;
-  min-width: 240px;
-  padding: 10px 14px;
-  border-radius: 8px;
+  overflow-x: auto;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
-  background-color: var(--bg);
-  color: var(--text-primary);
-  outline: none;
-  font-size: 14px;
-}
-
-.search-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-focus);
-}
-
-.filter-select {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background-color: var(--bg);
-  color: var(--text-primary);
-  outline: none;
-  font-size: 14px;
 }
 
 .data-table {
@@ -427,65 +726,152 @@
 }
 
 .data-table th {
-  padding: 12px 16px;
+  padding: 14px 18px;
   font-size: 12px;
   font-weight: 700;
   color: var(--text-secondary);
   text-transform: uppercase;
+  letter-spacing: 0.5px;
   border-bottom: 1px solid var(--border);
-  background-color: #f8fafc;
+  background-color: var(--table-header-bg);
 }
 
 .data-table td {
-  padding: 14px 16px;
+  padding: 14px 18px;
   font-size: 14px;
   border-bottom: 1px solid var(--border);
   color: var(--text-primary);
+  transition: background-color 0.15s ease;
 }
 
-.data-table tr:hover {
-  background-color: var(--primary-light);
+.data-table tr:hover td {
+  background-color: var(--table-row-hover);
 }
 
-.actions-cell {
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* =========================================================
+   STEPPER VISUAL NO CADASTRO
+   ========================================================= */
+.stepper-bar {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+  gap: 12px;
 }
 
-.action-btn-sm {
-  padding: 6px 12px;
-  border-radius: 6px;
+.stepper-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 13px;
   font-weight: 600;
-  border: 1px solid var(--border);
-  background-color: var(--card-bg);
-  color: var(--text-secondary);
-  cursor: pointer;
+  color: var(--text-muted);
   transition: all 0.2s ease;
 }
 
-.action-btn-sm:hover {
-  background-color: var(--primary-light);
-  color: var(--primary);
-  border-color: #bfdbfe;
+.stepper-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.2s ease;
 }
 
-/* Patient List */
+.stepper-step.active {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.stepper-step.active .stepper-number {
+  background: var(--primary-gradient);
+  color: white;
+  border-color: transparent;
+  box-shadow: var(--primary-glow);
+}
+
+.stepper-step.completed {
+  color: var(--text-primary);
+}
+
+.stepper-step.completed .stepper-number {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* =========================================================
+   MODAIS & OVERLAYS
+   ========================================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(9, 13, 22, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* =========================================================
+   LISTA DE PACIENTES & CARDS
+   ========================================================= */
 .patient-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 320px;
+  gap: 10px;
+  max-height: 360px;
   overflow-y: auto;
+  padding-right: 4px;
 }
 
 .patient-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background-color: var(--bg);
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border);
   transition: all 0.2s ease;
   cursor: pointer;
@@ -494,58 +880,62 @@
 
 .patient-item:hover {
   background-color: var(--primary-light);
-  border-color: #bfdbfe;
+  border-color: rgba(16, 185, 129, 0.3);
   transform: translateX(4px);
 }
 
 .patient-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .patient-name {
   font-size: 14px;
-  font-weight: 600;
-  color: var(--primary);
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .patient-last-date {
   font-size: 12px;
-  color: var(--text-secondary);
-}
-
-.patient-arrow {
-  color: var(--primary);
-  font-weight: bold;
+  color: var(--text-muted);
 }
 
 .empty-patients-msg {
-  padding: 24px 16px;
+  padding: 36px 20px;
   text-align: center;
-  background-color: var(--bg);
-  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius);
   color: var(--text-secondary);
   font-size: 14px;
   border: 1px dashed var(--border);
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
+/* =========================================================
+   RESPONSIVIDADE (Mobile & Tablets)
+   ========================================================= */
+@media (max-width: 900px) {
   .sidebar {
     position: static;
     width: 100%;
     height: auto;
     border-right: none;
     border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
   }
 
   .dashboard-main {
     margin-left: 0;
-    padding: 20px;
+    width: 100%;
+    padding: 24px 20px;
   }
 
   .dashboard-layout {
     flex-direction: column;
+  }
+
+  .profile-header-card {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

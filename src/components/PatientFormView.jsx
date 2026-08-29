@@ -28,7 +28,7 @@ export default function PatientFormView({ patient, onBack, onSave, loading }) {
     horario_acorda: patient?.horario_acorda || '',
     horario_dorme: patient?.horario_dorme || '',
     litros_agua: patient?.litros_agua || '',
-    atividade_fisica: patient?.atividade_fisica ?? false,
+    atividade_fisica: patient?.atividade_fisica ? (patient.atividade_fisica === 'Sim' || patient.atividade_fisica === true) : false,
     atividade_fisica_descricao: patient?.atividade_fisica_descricao || '',
     observacoes: patient?.observacoes || '',
   });
@@ -143,8 +143,8 @@ export default function PatientFormView({ patient, onBack, onSave, loading }) {
           </button>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--primary)' }}>
-            {patient ? 'Editar Paciente' : 'Novo Paciente'}
+          <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>
+            {patient ? 'Editar Paciente' : 'Cadastrar Novo Paciente'}
           </h2>
         </div>
 

@@ -3,9 +3,10 @@ import { client } from '../lib/neon';
 import Logo from './Logo';
 import PatientFormView from './PatientFormView';
 import PatientProfile from './PatientProfile';
+import ThemeToggle from './ThemeToggle';
 import '../dashboard.css';
 
-export default function Dashboard({ user, onLogout }) {
+export default function Dashboard({ user, onLogout, theme, onToggleTheme }) {
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' | 'pacientes'
   const [selectedPatientId, setSelectedPatientId] = useState(null);
 
@@ -13,6 +14,8 @@ export default function Dashboard({ user, onLogout }) {
   const [totalPacientes, setTotalPacientes] = useState(0);
   const [pacientesAtivosCount, setPacientesAtivosCount] = useState(0);
   const [consultasSemana, setConsultasSemana] = useState(0);
+  const [totalPlanosCount, setTotalPlanosCount] = useState(0);
+  const [allPlanosList, setAllPlanosList] = useState([]);
   const [pacientesSemRetorno, setPacientesSemRetorno] = useState([]);
   const [nutriaId, setNutriaId] = useState(null);
 
@@ -22,6 +25,7 @@ export default function Dashboard({ user, onLogout }) {
   const [statusFilter, setStatusFilter] = useState('Ativo');
   const [sortBy, setSortBy] = useState('nome');
   const [pacientesUltimasConsultas, setPacientesUltimasConsultas] = useState({});
+  const [initialPatientTab, setInitialPatientTab] = useState('dados');
 
   // Modais
   const [showPatientForm, setShowPatientForm] = useState(false);
@@ -158,6 +162,19 @@ export default function Dashboard({ user, onLogout }) {
 
       setPacientesSemRetorno(semRetorno);
       setPacientesUltimasConsultas(ultimas);
+
+      // Carregar planos alimentares
+      try {
+        const { data: planosData } = await client
+          .from('planos_alimentares')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        setAllPlanosList(planosData || []);
+        setTotalPlanosCount((planosData || []).length);
+      } catch (planErr) {
+        console.warn('Tabela planos_alimentares ainda não possui dados:', planErr);
+      }
     } catch (err) {
       console.error('Erro ao carregar dashboard:', err);
       setErrorMsg('Não foi possível carregar dados em tempo real.');
@@ -170,51 +187,144 @@ export default function Dashboard({ user, onLogout }) {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
+  const sanitizePatientData = (raw) => {
+    const {
+      patologia_texto,
+      restricao_texto,
+      alergia_texto,
+      id,
+      created_at,
+      ...clean
+    } = raw;
+
+    return {
+      ...clean,
+      nome: clean.nome?.trim() || '',
+      email: clean.email?.trim() || null,
+      telefone: clean.telefone?.trim() || null,
+      whatsapp: clean.whatsapp?.trim() || null,
+      data_nascimento: clean.data_nascimento?.trim() || null,
+      sexo: clean.sexo || 'Feminino',
+      cidade: clean.cidade?.trim() || null,
+      estado: clean.estado?.trim() || null,
+      peso_inicial: clean.peso_inicial !== '' && clean.peso_inicial !== null && !isNaN(Number(clean.peso_inicial)) ? Number(clean.peso_inicial) : null,
+      altura: clean.altura !== '' && clean.altura !== null && !isNaN(Number(clean.altura)) ? Number(clean.altura) : null,
+      refeicoes_por_dia: clean.refeicoes_por_dia !== '' && clean.refeicoes_por_dia !== null && !isNaN(Number(clean.refeicoes_por_dia)) ? Number(clean.refeicoes_por_dia) : null,
+      litros_agua: clean.litros_agua !== '' && clean.litros_agua !== null && !isNaN(Number(clean.litros_agua)) ? Number(clean.litros_agua) : null,
+      objetivos: Array.isArray(clean.objetivos) ? clean.objetivos : [],
+      objetivo_texto: clean.objetivo_texto?.trim() || null,
+      nivel_atividade: clean.nivel_atividade || 'Sedentário',
+      patologias: Array.isArray(clean.patologias) ? clean.patologias : [],
+      medicamentos_continuos: clean.medicamentos_continuos?.trim() || null,
+      restricoes_alimentares: Array.isArray(clean.restricoes_alimentares) ? clean.restricoes_alimentares : [],
+      alergias: Array.isArray(clean.alergias) ? clean.alergias : [],
+      suplementos_em_uso: clean.suplementos_em_uso?.trim() || null,
+      habitos_intestinais: clean.habitos_intestinais?.trim() || null,
+      qualidade_sono: clean.qualidade_sono?.trim() || null,
+      atividade_fisica: typeof clean.atividade_fisica === 'boolean'
+        ? (clean.atividade_fisica ? 'Sim' : 'Não')
+        : (clean.atividade_fisica || 'Não'),
+      atividade_fisica_descricao: clean.atividade_fisica_descricao?.trim() || null,
+      horario_acorda: clean.horario_acorda?.trim() || null,
+      horario_dorme: clean.horario_dorme?.trim() || null,
+      observacoes: clean.observacoes?.trim() || null,
+    };
+  };
+
   const handleSavePatient = async (formData) => {
     setSavingLoading(true);
     try {
       let successPatientId = null;
+      let targetNutriaId = nutriaId;
+
+      if (!targetNutriaId && user?.email) {
+        const { data: nutriData } = await client
+          .from('nutricionistas')
+          .select('id')
+          .eq('email', user.email)
+          .maybeSingle();
+
+        if (nutriData?.id) {
+          targetNutriaId = nutriData.id;
+          setNutriaId(targetNutriaId);
+        } else {
+          const { data: newNutri, error: createErr } = await client
+            .from('nutricionistas')
+            .insert([{ nome: user.name || 'Nutricionista', email: user.email }])
+            .select('id')
+            .single();
+
+          if (createErr) throw createErr;
+          if (newNutri) {
+            targetNutriaId = newNutri.id;
+            setNutriaId(targetNutriaId);
+          }
+        }
+      }
+
+      if (!targetNutriaId) {
+        throw new Error('Identificação da nutricionista não encontrada. Por favor, recarregue a página.');
+      }
+
+      const cleanData = sanitizePatientData(formData);
 
       if (editingPatient) {
-        const { error } = await client
+        let updatePayload = {
+          ...cleanData,
+          updated_at: new Date().toISOString(),
+        };
+
+        let { error } = await client
           .from('pacientes')
-          .update({
-            ...formData,
-            updated_at: new Date().toISOString(),
-          })
+          .update(updatePayload)
           .eq('id', editingPatient.id)
-          .eq('nutricionista_id', nutriaId);
+          .eq('nutricionista_id', targetNutriaId);
+
+        if (error && error.message && error.message.includes('observacoes')) {
+          delete updatePayload.observacoes;
+          const retry = await client
+            .from('pacientes')
+            .update(updatePayload)
+            .eq('id', editingPatient.id)
+            .eq('nutricionista_id', targetNutriaId);
+          error = retry.error;
+        }
 
         if (error) throw error;
         successPatientId = editingPatient.id;
       } else {
         const codigoAmigavel = 'PAC-' + Math.floor(100000 + Math.random() * 900000);
-        const { data, error } = await client.from('pacientes').insert([
-          {
-            ...formData,
-            nutricionista_id: nutriaId,
-            codigo_amigavel: codigoAmigavel,
-            status: 'Ativo',
-          },
-        ]).select('id').single();
+        let insertPayload = {
+          ...cleanData,
+          nutricionista_id: targetNutriaId,
+          codigo_amigavel: codigoAmigavel,
+          status: 'Ativo',
+        };
 
-        if (error) throw error;
-        successPatientId = data.id;
+        let res = await client.from('pacientes').insert([insertPayload]).select('id').single();
+
+        if (res.error && res.error.message && res.error.message.includes('observacoes')) {
+          delete insertPayload.observacoes;
+          res = await client.from('pacientes').insert([insertPayload]).select('id').single();
+        }
+
+        if (res.error) throw res.error;
+        successPatientId = res.data.id;
       }
 
       setShowPatientForm(false);
       setEditingPatient(null);
-      fetchDashboardData();
+      await fetchDashboardData();
       
       // Mostrar mensagem de sucesso e redirecionar
-      alert('Paciente cadastrado com sucesso!');
+      alert('Paciente salvo com sucesso!');
       if (successPatientId) {
         setSelectedPatientId(successPatientId);
         setActiveTab('pacientes');
       }
     } catch (err) {
       console.error('Erro ao salvar paciente:', err);
-      alert('Ocorreu um erro ao salvar o paciente. Tente novamente.');
+      alert('Ocorreu um erro ao salvar o paciente: ' + (err.message || 'Verifique os dados e tente novamente.'));
     } finally {
       setSavingLoading(false);
     }
@@ -276,7 +386,9 @@ export default function Dashboard({ user, onLogout }) {
         <div className="sidebar-top">
           <div className="sidebar-brand">
             <Logo className="sidebar-logo" />
-            <span className="sidebar-brand-name">AndradeNutri</span>
+            <div className="sidebar-brand-name">
+              Andrade<span>Nutri</span>
+            </div>
           </div>
 
           <nav className="sidebar-nav">
@@ -302,10 +414,23 @@ export default function Dashboard({ user, onLogout }) {
               <span className="nav-icon">👥</span>
               <span>Pacientes</span>
             </button>
+            <button
+              className={`nav-item ${activeTab === 'planos' && !selectedPatientId && !showPatientForm ? 'active' : ''}`}
+              onClick={() => {
+                setSelectedPatientId(null);
+                setShowPatientForm(false);
+                setActiveTab('planos');
+              }}
+            >
+              <span className="nav-icon">🥗</span>
+              <span>Planos Alimentares</span>
+            </button>
           </nav>
         </div>
 
         <div className="sidebar-footer">
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
           <div className="user-profile-summary">
             <div className="user-avatar">{getInitials(user.name)}</div>
             <div className="user-profile-details">
@@ -333,19 +458,29 @@ export default function Dashboard({ user, onLogout }) {
           <PatientProfile
             patientId={selectedPatientId}
             nutriaId={nutriaId}
-            onBack={() => setSelectedPatientId(null)}
+            initialTab={initialPatientTab}
+            onBack={() => {
+              setSelectedPatientId(null);
+              setInitialPatientTab('dados');
+            }}
           />
         ) : (
           <>
             <div className="dashboard-header-bar">
               <div>
                 <h1 className="dashboard-heading">
-                  {activeTab === 'dashboard' ? 'Visão Geral' : 'Gestão de Pacientes'}
+                  {activeTab === 'dashboard'
+                    ? 'Visão Geral'
+                    : activeTab === 'pacientes'
+                    ? 'Gestão de Pacientes'
+                    : 'Planos Alimentares'}
                 </h1>
                 <p className="dashboard-subheading">
                   {activeTab === 'dashboard'
                     ? 'Acompanhamento dos indicadores do seu consultório em tempo real.'
-                    : 'Gerenciamento completo da carteira de pacientes e prontuários.'}
+                    : activeTab === 'pacientes'
+                    ? 'Gerenciamento completo da carteira de pacientes e prontuários.'
+                    : 'Acompanhamento e prescrição de dietas e cardápios semanais com IA.'}
                 </p>
               </div>
 
@@ -372,7 +507,7 @@ export default function Dashboard({ user, onLogout }) {
 
             {activeTab === 'dashboard' ? (
               <div className="dashboard-cards-grid">
-                <div className="metric-card">
+                <div className="metric-card" style={{ cursor: 'pointer' }} onClick={() => setActiveTab('pacientes')}>
                   <div className="metric-card-header">
                     <span className="metric-title">Total de Pacientes</span>
                     <div className="metric-badge-icon">👥</div>
@@ -390,6 +525,15 @@ export default function Dashboard({ user, onLogout }) {
                   </div>
                   <div className="metric-value">{loading ? '...' : consultasSemana}</div>
                   <div className="metric-description">Agendamentos ou atendimentos nesta semana</div>
+                </div>
+
+                <div className="metric-card" style={{ cursor: 'pointer' }} onClick={() => setActiveTab('planos')}>
+                  <div className="metric-card-header">
+                    <span className="metric-title">Planos Alimentares</span>
+                    <div className="metric-badge-icon">🥗</div>
+                  </div>
+                  <div className="metric-value">{loading ? '...' : totalPlanosCount}</div>
+                  <div className="metric-description">Planos alimentares cadastrados no sistema</div>
                 </div>
 
                 <div className="metric-card no-return-card full-width">
@@ -425,6 +569,90 @@ export default function Dashboard({ user, onLogout }) {
                     </div>
                   )}
                 </div>
+              </div>
+            ) : activeTab === 'planos' ? (
+              <div className="metric-card full-width">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+                  <div>
+                    <h3 className="metric-title" style={{ fontSize: '18px', textTransform: 'none', color: 'var(--text-primary)' }}>
+                      🥗 Todos os Planos Alimentares ({allPlanosList.length})
+                    </h3>
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                      Selecione um plano para abrir o prontuário ou escolha um paciente para gerar um novo plano.
+                    </p>
+                  </div>
+                </div>
+
+                {loading ? (
+                  <p style={{ color: 'var(--text-secondary)', padding: '20px', textAlign: 'center' }}>Carregando planos alimentares...</p>
+                ) : allPlanosList.length === 0 ? (
+                  <div className="empty-patients-msg" style={{ padding: '48px 20px' }}>
+                    <div style={{ fontSize: '40px', marginBottom: '12px' }}>🥗</div>
+                    <h4 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '6px' }}>
+                      Nenhum plano alimentar gerado ainda
+                    </h4>
+                    <p style={{ fontSize: '14px', color: 'var(--text-secondary)', maxWidth: '460px', margin: '0 auto 20px auto' }}>
+                      Abra o perfil de qualquer paciente e acesse a aba <strong>"Planos Alimentares"</strong> para gerar dietas inteligentes via IA.
+                    </p>
+                    <button className="btn-primary" onClick={() => setActiveTab('pacientes')}>
+                      👥 Ver Lista de Pacientes
+                    </button>
+                  </div>
+                ) : (
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Título do Plano</th>
+                        <th>Paciente</th>
+                        <th>Data de Criação</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allPlanosList.map((plano) => {
+                        const paciente = pacientesList.find((p) => p.id === plano.paciente_id) || {
+                          nome: plano.conteudo?.paciente_nome || 'Paciente',
+                        };
+
+                        return (
+                          <tr key={plano.id}>
+                            <td>
+                              <span style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
+                                {plano.titulo || 'Plano Alimentar Semanal'}
+                              </span>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div className="user-avatar" style={{ width: '28px', height: '28px', fontSize: '11px' }}>
+                                  {getInitials(paciente.nome)}
+                                </div>
+                                <span style={{ fontWeight: '600', color: 'var(--primary)' }}>
+                                  {paciente.nome}
+                                </span>
+                              </div>
+                            </td>
+                            <td>
+                              {new Date(plano.created_at).toLocaleDateString('pt-BR')} às{' '}
+                              {new Date(plano.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                            </td>
+                            <td>
+                              <button
+                                className="btn-primary"
+                                style={{ width: 'auto', padding: '6px 14px', fontSize: '12px' }}
+                                onClick={() => {
+                                  setSelectedPatientId(plano.paciente_id);
+                                  setInitialPatientTab('planos');
+                                }}
+                              >
+                                🥗 Abrir no Prontuário →
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
               </div>
             ) : (
               <div className="metric-card full-width">

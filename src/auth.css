@@ -1,16 +1,16 @@
-/* Layout Split Page para NutriMi Login */
+/* Layout Split Page para AndradeNutri Auth */
 .login-split-page {
   display: flex;
   min-height: 100vh;
   width: 100vw;
-  background-color: #f8fafc;
+  background-color: var(--bg);
   overflow-x: hidden;
 }
 
 /* 1. LADO ESQUERDO — Institucional (50% Desktop) */
 .login-left-panel {
   width: 50%;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #172554 100%);
+  background: linear-gradient(135deg, #000080 0%, #1e3a8a 50%, #172554 100%);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -26,11 +26,11 @@
   position: absolute;
   top: -100px;
   left: -100px;
-  width: 400px;
-  height: 400px;
+  width: 450px;
+  height: 450px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  filter: blur(40px);
+  background: rgba(255, 255, 255, 0.1);
+  filter: blur(50px);
   pointer-events: none;
 }
 
@@ -41,7 +41,7 @@
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: rgba(37, 99, 235, 0.4);
+  background: rgba(59, 130, 246, 0.35);
   filter: blur(60px);
   pointer-events: none;
 }
@@ -62,88 +62,75 @@
 }
 
 .left-logo-wrapper {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.15);
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .left-logo-svg {
   width: 28px;
   height: 28px;
-}
-
-.left-logo-svg path {
-  stroke: #ffffff !important;
+  stroke: white;
 }
 
 .left-brand-name {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 800;
-  color: #ffffff;
   letter-spacing: -0.5px;
+  color: #ffffff;
 }
 
-.left-text-group {
+.left-headline-block {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .left-main-title {
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 800;
   line-height: 1.25;
-  letter-spacing: -0.5px;
-  color: #ffffff;
-}
-
-.left-subtitle {
-  font-size: 16px;
-  line-height: 1.5;
-  color: #eff6ff;
-  opacity: 0.95;
-}
-
-.nutri-andrade-highlight {
-  font-size: 38px;
-  font-weight: 900;
-  color: #ffffff;
   letter-spacing: -1px;
-  margin-top: 4px;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
-/* Benefícios */
-.benefits-list {
+.left-main-title span {
+  color: #93c5fd;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+
+.left-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.left-features-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
-.benefit-item {
+.left-feature-item {
   display: flex;
   align-items: center;
   gap: 12px;
   font-size: 15px;
   font-weight: 500;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.95);
 }
 
-.benefit-icon-box {
+.feature-check-badge {
   width: 24px;
   height: 24px;
-  border-radius: 6px;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,7 +143,7 @@
 /* 2. LADO DIREITO — Formulário (50% Desktop) */
 .login-right-panel {
   width: 50%;
-  background-color: #f8fafc;
+  background-color: var(--bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -167,10 +154,10 @@
 .login-form-wrapper {
   width: 100%;
   max-width: 440px;
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
   padding: 40px;
   display: flex;
   flex-direction: column;
@@ -211,19 +198,19 @@
 .right-brand-name {
   font-size: 20px;
   font-weight: 800;
-  color: #2563eb;
+  color: var(--primary);
 }
 
 .form-welcome-title {
   font-size: 24px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-primary);
   letter-spacing: -0.5px;
 }
 
 .form-welcome-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .form-group {
@@ -235,8 +222,8 @@
 
 .form-label {
   font-size: 14px;
-  font-weight: 600;
-  color: #475569;
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 .form-input {
@@ -244,17 +231,19 @@
   height: 46px;
   padding: 0 16px;
   font-size: 15px;
-  border-radius: 10px;
-  border: 1px solid #cbd5e1;
-  background-color: #ffffff;
-  color: #0f172a;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   outline: none;
   transition: all 0.2s ease;
+  font-family: inherit;
 }
 
 .form-input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: var(--primary);
+  background-color: var(--card-bg);
+  box-shadow: 0 0 0 3px var(--primary-focus);
 }
 
 .password-input-wrapper {
@@ -280,6 +269,7 @@
   justify-content: center;
   opacity: 0.7;
   transition: opacity 0.2s ease;
+  color: var(--text-secondary);
 }
 
 .toggle-password-btn:hover {
@@ -288,14 +278,14 @@
 
 .forgot-password-link {
   font-size: 13px;
-  color: #2563eb;
+  color: var(--primary);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s ease;
 }
 
 .forgot-password-link:hover {
-  color: #1d4ed8;
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
@@ -305,19 +295,20 @@
   font-size: 16px;
   font-weight: 700;
   color: #ffffff;
-  background-color: #2563eb;
+  background: var(--primary-gradient);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius);
   cursor: pointer;
   transition: all 0.2s ease;
   margin-top: 8px;
-  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.25);
+  box-shadow: var(--primary-glow);
+  font-family: inherit;
 }
 
 .btn-primary-large:hover {
-  background-color: #1d4ed8;
+  filter: brightness(1.05);
   transform: translateY(-1px);
-  box-shadow: 0 6px 12px -2px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 6px 16px rgba(0, 0, 128, 0.45);
 }
 
 .btn-primary-large:active {
@@ -325,7 +316,7 @@
 }
 
 .btn-primary-large:disabled {
-  background-color: #94a3b8;
+  background: var(--text-muted);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -335,60 +326,66 @@
   text-align: center;
   margin-top: 24px;
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .auth-link-bold {
-  color: #2563eb;
+  color: var(--primary);
   text-decoration: none;
   font-weight: 700;
   transition: color 0.2s ease;
 }
 
 .auth-link-bold:hover {
-  color: #1d4ed8;
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
-.login-footer {
-  margin-top: 32px;
+.alert-error {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background-color: var(--error-light);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--error);
+  font-size: 14px;
+  font-weight: 600;
   display: flex;
-  gap: 8px;
-  justify-content: center;
   align-items: center;
-  font-size: 12px;
-  color: #94a3b8;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.login-footer a {
-  color: #64748b;
-  text-decoration: none;
+.alert-success {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background-color: var(--success-light);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--success);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.login-footer a:hover {
-  text-decoration: underline;
-}
-
-/* 3. RESPONSIVIDADE (Mobile) */
-@media (max-width: 992px) {
+/* Responsividade Mobile */
+@media (max-width: 900px) {
   .login-split-page {
     flex-direction: column;
   }
-
   .login-left-panel {
-    display: none; /* Ocultar painel institucional no mobile para foco total no login */
+    display: none;
   }
-
   .login-right-panel {
     width: 100%;
     min-height: 100vh;
     padding: 24px 16px;
   }
-
   .login-form-wrapper {
     box-shadow: none;
     border: none;
-    padding: 20px 0;
+    padding: 24px 8px;
     background: transparent;
   }
 }
