@@ -32,21 +32,31 @@ export default function Login({ onLoginSuccess, navigateToRegister }) {
         onLoginSuccess(result.data.user);
       }
     } catch (err) {
-      console.error(err);
-      setError('Não foi possível conectar ao servidor. Tente novamente.');
+      console.error('Erro no signIn:', err);
+      setError(err?.message || 'Não foi possível conectar ao servidor. Tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
   const translateError = (msg) => {
-    if (msg.includes('invalid credentials') || msg.includes('Invalid credentials')) {
+    if (!msg) return 'Falha na autenticação. Verifique os dados informados.';
+    const lower = msg.toLowerCase();
+    if (
+      lower.includes('invalid credentials') ||
+      lower.includes('invalid password') ||
+      lower.includes('invalid email or password') ||
+      lower.includes('invalid login credentials')
+    ) {
       return 'E-mail ou senha incorretos.';
     }
-    if (msg.includes('user not found') || msg.includes('User not found')) {
+    if (lower.includes('user not found') || lower.includes('user does not exist')) {
       return 'Nenhuma conta encontrada com este e-mail.';
     }
-    return msg || 'Falha na autenticação. Verifique os dados informados.';
+    if (lower.includes('email not verified')) {
+      return 'E-mail ainda não verificado.';
+    }
+    return msg;
   };
 
   return (
